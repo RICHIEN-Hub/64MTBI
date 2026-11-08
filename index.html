@@ -1,0 +1,1632 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>六十四島</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=LXGW+WenKai+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* Layout: one nautical chart sheet. A single column moves from intro to voyage to passport to the 8x8 atlas of 64 islands. */
+:root{
+  --bg:#E7EDF1;
+  --surface:#F5F8FA;
+  --ink:#0E2233;
+  --muted:#566B7B;
+  --line:#B4C4D0;
+  --grid:#DCE5EB;
+  --wash:#D5E0E8;
+  --accent:#C81E65;
+  --accent-ink:#FFFFFF;
+  --sea:#176F80;
+  --display:"LXGW WenKai TC","Kaiti TC","DFKai-SB",serif;
+  --body:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0A1620;--surface:#10212E;--ink:#DDE8EF;--muted:#8DA3B3;--line:#2A4251;--grid:#10222F;--wash:#173145;
+    --accent:#FF5C98;--accent-ink:#1A0610;--sea:#4FC1D3;color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0A1620;--surface:#10212E;--ink:#DDE8EF;--muted:#8DA3B3;--line:#2A4251;--grid:#10222F;--wash:#173145;
+  --accent:#FF5C98;--accent-ink:#1A0610;--sea:#4FC1D3;color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+body{
+  background-color:var(--bg);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:36px 36px;
+  color:var(--ink);
+  font-family:var(--body);
+  font-size:16px;
+  line-height:1.75;
+  min-height:100vh;
+  padding-block:20px 56px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));
+  padding-right:max(16px,env(safe-area-inset-right,0px));
+}
+.app{max-width:680px;margin:0 auto}
+.mono{font-family:var(--mono)}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+
+/* top bar */
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-bottom:14px;border-bottom:1px solid var(--ink);margin-bottom:28px;flex-wrap:wrap}
+.brand{background:none;border:0;padding:0;display:flex;align-items:baseline;gap:10px;text-align:left}
+.brand b{font-family:var(--display);font-size:20px;letter-spacing:.04em}
+.brand span{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.12em}
+.brand[disabled]{cursor:default}
+.brand.quiet b{display:none}
+.top-r{display:flex;align-items:center;gap:12px;font-family:var(--mono);font-size:12px;color:var(--muted)}
+.linkbtn{background:none;border:1px solid var(--line);padding:6px 12px;min-height:36px;border-radius:3px;font-size:14px;color:var(--ink)}
+.linkbtn:hover{border-color:var(--accent);color:var(--accent)}
+
+/* buttons */
+.btn{min-height:46px;padding:10px 22px;border:1px solid var(--ink);background:transparent;border-radius:3px;font-weight:500;letter-spacing:.04em}
+.btn:hover{background:var(--wash)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.primary:hover{filter:brightness(1.07)}
+.btn.ghost{border-color:var(--line);color:var(--muted)}
+.btn-row{display:flex;gap:12px;flex-wrap:wrap}
+.btn-row.one{flex-wrap:nowrap;gap:clamp(6px,2vw,12px)}
+.btn-row.one .btn{padding:10px clamp(6px,2.2vw,16px);font-size:clamp(12px,3.6vw,16px);letter-spacing:.02em;white-space:nowrap;min-width:0;flex:0 0 auto}
+/* same size as 起航 on the main home */
+.btn-row.one .btn.primary{padding:10px 22px;font-size:16px;letter-spacing:.04em;flex:0 0 auto}
+
+/* intro */
+.hero{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;margin-bottom:22px}
+.hero h1{margin:0;white-space:nowrap;font-size:clamp(38px,12.5vw,88px)}
+.hero .eyebrow{white-space:nowrap}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.2em;color:var(--sea);margin:0 0 6px}
+h1{font-family:var(--display);font-size:clamp(52px,14vw,88px);line-height:1.05;margin:0 0 14px;letter-spacing:.06em;text-wrap:balance}
+.lede{margin:0 0 22px;color:var(--ink)}
+.rose{display:block;width:clamp(84px,24vw,190px);height:auto}
+.facts{display:flex;gap:26px;margin:0 0 26px;padding:14px 0;border-block:1px solid var(--line);flex-wrap:wrap}
+.facts div{display:flex;flex-direction:column;gap:0}
+.facts dt{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.14em}
+.facts dd{margin:0;font-family:var(--display);font-size:24px;line-height:1.3}
+.note{margin:22px 0 0;font-size:14px;color:var(--muted);max-width:36em}
+.note b{color:var(--ink);font-weight:500}
+
+/* quiz */
+.route{margin-bottom:22px}
+.route-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:12px}
+.chap{font-family:var(--display);font-size:22px;font-weight:700}
+.count{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.track{position:relative;height:22px}
+.track::before{content:"";position:absolute;left:0;right:0;top:11px;border-top:1.5px dashed var(--line)}
+.done{position:absolute;left:0;top:10px;height:3px;background:var(--accent);transition:width .35s ease}
+.tick{position:absolute;top:5px;width:1px;height:13px;background:var(--ink);opacity:.5}
+.boat{position:absolute;top:-4px;width:30px;margin-left:-15px;transition:left .35s ease;color:var(--ink)}
+.chs{display:grid;grid-template-columns:repeat(5,1fr);margin-top:6px;font-family:var(--mono);font-size:11px;color:var(--muted);text-align:center}
+.chs span{padding-inline:2px;white-space:nowrap}
+.chs .on{color:var(--accent);font-weight:500}
+
+.scene{background:var(--surface);border:1px solid var(--ink);border-radius:4px;padding:26px 22px 22px;position:relative;outline-offset:-7px;animation:enter .32s ease both}
+.scene::before{content:"";position:absolute;inset:5px;border:1px solid var(--line);border-radius:2px;pointer-events:none}
+.scene:focus{outline:none}
+.loc{font-family:var(--mono);font-size:12px;letter-spacing:.1em;color:var(--sea);margin:0 0 10px;position:relative}
+.story{font-family:var(--display);font-size:clamp(21px,5.2vw,26px);line-height:1.6;margin:0 0 22px;text-wrap:balance;position:relative}
+.choices{display:grid;gap:12px;position:relative}
+.choice{display:flex;gap:14px;align-items:flex-start;width:100%;text-align:left;background:var(--bg);border:1px solid var(--line);border-radius:4px;padding:15px 16px;min-height:60px;transition:border-color .15s,background .15s,transform .15s}
+.choice:hover{border-color:var(--accent);background:var(--wash)}
+.choice.picked{border-color:var(--accent);background:var(--wash);transform:translateX(4px)}
+.choice .key{flex:none;width:26px;height:26px;display:grid;place-items:center;border:1px solid var(--ink);border-radius:3px;font-size:12px;margin-top:1px}
+.choice.picked .key{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.choice span:last-child{min-width:0}
+.quiz-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:16px;flex-wrap:wrap}
+.hint{font-size:13px;color:var(--muted)}
+@keyframes enter{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* passport / island card */
+.passport{background:var(--surface);border:1px solid var(--ink);border-radius:4px;padding:22px 22px 26px;position:relative;animation:enter .4s ease both}
+.passport::before{content:"";position:absolute;inset:5px;border:1px solid var(--line);border-radius:2px;pointer-events:none}
+.passport>*{position:relative}
+.pp-head{display:flex;justify-content:space-between;gap:12px;font-size:11px;letter-spacing:.2em;color:var(--sea);padding-bottom:10px;border-bottom:1px dashed var(--line);margin-bottom:18px;flex-wrap:wrap}
+.pp-main{display:flex;justify-content:space-between;gap:16px;align-items:flex-start}
+.pp-main>div:first-child{min-width:0}
+.code{font-size:clamp(38px,11vw,60px);line-height:1;margin:0 0 10px;font-weight:500;letter-spacing:.02em}
+.code span{color:var(--accent);font-size:.55em;letter-spacing:.06em}
+.pp-main .pn-name{font-family:var(--display);font-size:clamp(24px,6.4vw,32px);line-height:1.3;margin:0 0 6px;text-wrap:balance}
+.pp-main h2{font-family:var(--display);font-size:clamp(24px,6.4vw,32px);line-height:1.3;margin:0 0 6px;text-wrap:balance}
+.tag{margin:0;color:var(--muted);font-family:var(--display);font-size:18px}
+.stamp{flex:none;width:92px;height:92px;border:2px solid var(--accent);border-radius:50%;display:grid;place-content:center;text-align:center;color:var(--accent);transform:rotate(-12deg);outline:1px solid var(--accent);outline-offset:-7px;animation:stamp .55s cubic-bezier(.2,1.3,.4,1) .2s both}
+.stamp-t{font-family:var(--display);font-weight:700;font-size:22px;line-height:1.15}
+.stamp-s{font-size:9px;letter-spacing:.2em}
+@keyframes stamp{from{transform:rotate(-12deg) scale(1.8);opacity:0}to{transform:rotate(-12deg) scale(1);opacity:1}}
+.desc{margin:20px 0 22px;max-width:36em}
+.sec-t{font-family:var(--mono);font-size:11px;letter-spacing:.18em;color:var(--muted);margin:0 0 10px}
+.bars{display:grid;gap:14px;margin-bottom:24px}
+.bar-labels{display:flex;justify-content:space-between;gap:10px;font-size:14px;line-height:1.4;margin-bottom:5px}
+.bar-labels>div{display:flex;gap:6px;align-items:baseline;color:var(--muted)}
+.bar-labels .win{color:var(--ink);font-weight:500}
+.bar-labels b{font-family:var(--mono);font-weight:500}
+.bar-labels .pc{font-family:var(--mono);font-size:12px;font-variant-numeric:tabular-nums}
+.bar-track{display:flex;height:10px;border:1px solid var(--ink);border-radius:2px;overflow:hidden;background:var(--bg)}
+.bar-track i{display:block;height:100%;transition:width .6s ease}
+.bar-track .win{background:var(--accent)}
+.bar-track .lose{background:var(--wash)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px}
+.chip{display:flex;gap:6px;align-items:baseline;border:1px solid var(--line);border-radius:3px;padding:3px 10px;font-size:14px;background:var(--bg)}
+.chip b{font-family:var(--mono);font-weight:500;color:var(--accent)}
+.facts2{display:grid;grid-template-columns:1fr 1fr;gap:18px 24px;margin:0;padding-top:20px;border-top:1px dashed var(--line)}
+.facts2 dt{font-family:var(--display);font-weight:700;font-size:18px;color:var(--sea);margin-bottom:2px}
+.facts2 dd{margin:0;font-size:15px;line-height:1.7}
+@media (max-width:560px){.facts2{grid-template-columns:1fr}}
+.after{margin-top:22px;display:flex;gap:12px;flex-wrap:wrap}
+.said{margin-top:12px;font-size:14px;color:var(--muted);user-select:all}
+
+/* atlas */
+.page-t{font-family:var(--display);font-size:clamp(32px,8vw,46px);line-height:1.2;margin:0 0 6px}
+.page-s{margin:0 0 20px;color:var(--muted);max-width:34em}
+.atlas-wrap{background:var(--surface);border:1px solid var(--ink);border-radius:4px;padding:14px 10px 12px;margin-bottom:18px}
+.atlas{display:grid;grid-template-columns:38px repeat(8,minmax(0,1fr));gap:0}
+.ch,.rh{font-family:var(--mono);font-size:10px;color:var(--muted);display:grid;place-items:center;letter-spacing:.02em}
+.ch{height:26px}
+.isle{aspect-ratio:1;min-width:0;padding:0;border:0;border-top:1px dotted var(--line);border-left:1px dotted var(--line);background:transparent;display:grid;place-items:center;border-radius:0}
+.isle:hover{background:var(--wash)}
+.dot{width:9px;height:9px;border-radius:50%;border:1.5px solid var(--muted);display:block}
+.isle.got .dot{background:var(--accent);border-color:var(--accent)}
+.isle.me .dot{box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 28%,transparent)}
+.isle.sel{background:var(--wash);outline:1.5px solid var(--ink);outline-offset:-1.5px}
+.legend{display:flex;gap:16px;flex-wrap:wrap;margin:10px 4px 0;font-size:12px;color:var(--muted);align-items:center}
+.legend span{display:flex;gap:6px;align-items:center}
+.legend .dot{width:8px;height:8px}
+.legend .g .dot{background:var(--accent);border-color:var(--accent)}
+.axis-note{margin:8px 4px 0;font-size:12px;color:var(--muted);line-height:1.6}
+
+.jobs{list-style:none;margin:2px 0 8px;padding:0;display:flex;flex-wrap:wrap;gap:6px}
+.jobs li{border:1px solid var(--line);background:var(--bg);border-radius:3px;padding:1px 10px;font-size:14px;line-height:1.7}
+.work{margin:0;font-size:15px;color:var(--muted)}
+.facts2 .wide{grid-column:1/-1}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin:22px 0 0}
+.fchip{min-height:40px;padding:6px 14px;border:1px solid var(--line);background:var(--surface);border-radius:3px;font-size:14px}
+.fchip:hover{border-color:var(--accent)}
+.fchip.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.tgroup{margin-top:34px}
+.tg-t{font-family:var(--display);font-size:26px;line-height:1.3;margin:0;display:flex;align-items:baseline;gap:12px;padding-bottom:8px;border-bottom:1px solid var(--ink)}
+.tg-t .mono{font-size:13px;color:var(--sea);letter-spacing:.16em}
+.tbase{padding:22px 0 8px;border-bottom:1px dashed var(--line)}
+.tb-h{display:flex;gap:16px;align-items:center;margin-bottom:6px}
+.code2{font-size:30px;font-weight:500;margin:0;line-height:1.1}
+.tb-h h4{font-family:var(--display);font-size:24px;margin:0;line-height:1.3}
+.tb-h .tag{font-size:16px}
+.tbase .desc{margin:8px 0 16px}
+.tbase .facts2{border-top:0;padding-top:0;margin-bottom:18px}
+.vars{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px}
+@media (max-width:560px){.vars{grid-template-columns:1fr}}
+.vcard{background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:14px 16px;min-width:0;scroll-margin-top:20px}
+.vcard.hit{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.vcard header{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:4px}
+.vcard header b{font-family:var(--display);font-size:20px}
+.vcard header .mono{font-size:12px;color:var(--muted)}
+.vcard header em{margin-left:auto;font-style:normal;font-size:12px;color:var(--accent);border:1px solid var(--accent);border-radius:3px;padding:0 8px}
+.vcard header em.seen{color:var(--sea);border-color:var(--sea)}
+.vcard p{margin:0 0 6px;font-size:15px;line-height:1.7}
+.vcard .k{display:inline-block;font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--sea);margin-right:8px}
+.foot-note{margin:26px 0 0;font-size:14px;color:var(--muted);max-width:36em}
+
+.about{margin-top:52px;padding-top:30px;border-top:1px solid var(--ink)}
+.about h2{font-family:var(--display);font-size:clamp(28px,7vw,38px);line-height:1.25;margin:0 0 10px;text-wrap:balance}
+.about h3{font-family:var(--display);font-size:22px;line-height:1.4;margin:38px 0 6px}
+.about .sub{margin:0 0 16px;color:var(--muted);max-width:36em;font-size:15px}
+.about p.lead{margin:0;max-width:36em}
+.axlist{display:grid;gap:10px}
+.axrow{background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:12px 16px}
+.axhead{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+.axhead b{font-family:var(--display);font-size:19px}
+.axhead .mono{font-size:12px;color:var(--muted);letter-spacing:.08em}
+.axhead em{margin-left:auto;font-style:normal;font-size:12px;border:1px solid var(--line);color:var(--muted);border-radius:3px;padding:0 8px}
+.axhead em.new{color:var(--accent);border-color:var(--accent)}
+.axsides{display:grid;grid-template-columns:1fr 1fr;gap:6px 18px;font-size:14px;line-height:1.65}
+.axsides span{min-width:0}
+.axsides b{font-family:var(--mono);font-weight:500;color:var(--accent);margin-right:6px}
+@media (max-width:560px){.axsides{grid-template-columns:1fr}}
+.formula{display:flex;align-items:center;gap:clamp(4px,1.6vw,12px);flex-wrap:nowrap;margin:14px 0 4px;font-family:var(--mono);font-size:clamp(11px,3.3vw,14px)}
+.formula span{border:1px solid var(--ink);border-radius:3px;padding:2px clamp(5px,2vw,12px);background:var(--surface);white-space:nowrap}
+.winds{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+@media (max-width:560px){.winds{grid-template-columns:1fr}}
+.wind{background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:14px 16px;min-width:0}
+.wind header{display:flex;align-items:baseline;gap:10px;margin-bottom:4px}
+.wind header b{font-family:var(--display);font-size:22px}
+.wind header .mono{font-size:12px;color:var(--sea);letter-spacing:.1em}
+.wind p{margin:0;font-size:15px;line-height:1.7}
+.tgs{display:grid;gap:10px;margin-top:14px}
+.tgi{display:grid;grid-template-columns:96px minmax(0,1fr);gap:4px 16px;padding:12px 0;border-top:1px dashed var(--line)}
+.tgi:first-child{border-top:0}
+.tgi h4{font-family:var(--display);font-size:20px;margin:0;line-height:1.4}
+.tgi h4 .mono{display:block;font-size:12px;color:var(--sea);letter-spacing:.14em}
+.tgi p{margin:0 0 6px;font-size:15px}
+.tgi .chips{margin:0}
+.tgi .chip{font-size:13px;padding:1px 8px}
+@media (max-width:560px){.tgi{grid-template-columns:1fr}}
+.disclaim{margin:34px 0 22px;padding:14px 16px;border:1px dashed var(--line);border-radius:4px;font-size:14px;color:var(--muted)}
+/* atlas: collapsed traits */
+details>summary{list-style:none;cursor:pointer}
+details>summary::-webkit-details-marker{display:none}
+summary::after{content:"";flex:none;width:9px;height:9px;border-right:1.5px solid var(--ink);border-bottom:1.5px solid var(--ink);transform:rotate(45deg);margin:-3px 4px 0 auto;transition:transform .2s}
+details[open]>summary::after{transform:rotate(-135deg);margin-top:3px}
+.tbase{padding:0}
+.tbase>summary.tb-h{display:flex;align-items:center;gap:16px;margin:0;padding:16px 4px;min-height:68px}
+.tbase>summary.tb-h:hover{background:var(--wash)}
+.tbn{display:flex;flex-direction:column;min-width:0}
+.tbn b{font-family:var(--display);font-size:24px;line-height:1.3}
+.tbn small{font-family:var(--display);font-size:16px;color:var(--muted);line-height:1.5}
+.tb-body{padding:4px 4px 8px}
+.tb-body .desc{margin:0 0 16px}
+.vcard{padding:0}
+.vcard>summary{display:flex;align-items:center;gap:10px;flex-wrap:nowrap;padding:12px 16px;min-height:52px}
+.vcard>summary b{font-family:var(--display);font-size:20px}
+.vcard>summary .mono{font-size:12px;color:var(--muted)}
+.vcard>summary em{margin-left:auto;font-style:normal;font-size:12px;color:var(--accent);border:1px solid var(--accent);border-radius:3px;padding:0 8px;white-space:nowrap}
+.vcard>summary em.seen{color:var(--sea);border-color:var(--sea)}
+.vcard>summary em+*{}
+.vcard>summary::after{margin-left:6px}
+.vcard>summary em~*{}
+.vbody{padding:0 16px 12px}
+.vbody p:last-child{margin-bottom:0}
+.vars{align-items:start}
+.toggle-all{margin-left:auto}
+/* atlas: island panel opened from the map */
+#panel-wrap{margin-top:18px}
+.hint-map{margin:0 4px 0;font-size:13px;color:var(--muted)}
+.passport.panel{animation:enter .3s ease both}
+.pn-ctl{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0 4px}
+.pn-ctl .btn{min-height:40px;padding:6px 14px;font-size:14px}
+.pn-ctl .close{margin-left:auto}
+.sec{border-top:1px dashed var(--line);margin-top:6px}
+.sec:first-of-type{margin-top:14px}
+.sec>summary{display:flex;align-items:center;gap:10px;min-height:54px;padding:10px 2px;font-family:var(--display);font-weight:700;font-size:19px;line-height:1.4}
+.sec>summary:hover{color:var(--accent)}
+.sec-b{padding:2px 2px 16px}
+.sec-b>p{margin:0 0 10px}
+.sec-b .sec-t{margin:16px 0 8px}
+.sec-b .sec-t:first-child{margin-top:4px}
+.chips .chip{padding:2px 12px}
+.fstack{list-style:none;margin:0 0 10px;padding:0;display:grid;gap:8px}
+.fstack li{display:grid;grid-template-columns:44px minmax(0,1fr);gap:12px;align-items:start;padding:10px 12px;background:var(--bg);border:1px solid var(--line);border-radius:4px}
+.fstack .slot{font-size:11px;letter-spacing:.08em;color:var(--sea);padding-top:3px}
+.fstack b{font-family:var(--mono);font-weight:500;color:var(--accent);margin-right:8px}
+.fstack .fd{display:block;font-size:14px;color:var(--muted);line-height:1.6}
+.mini{font-size:13px;color:var(--muted);margin:0}
+.plist{margin:0 0 6px;padding-left:20px}
+.plist li{margin-bottom:6px}
+.cgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:0 0 14px}
+.ctile{display:flex;flex-direction:column;align-items:center;gap:1px;padding:9px 4px 8px;border:1px solid var(--line);border-radius:4px;text-align:center;min-width:0}
+.ctile .cc{font-size:13px;font-weight:500}
+.ctile .cn{font-size:12px;line-height:1.4;white-space:nowrap}
+.ctile.self{outline:2px solid var(--ink);outline-offset:1px}
+.cp{display:flex;gap:3px;margin-top:5px}
+.cp i{display:block;width:6px;height:6px;border-radius:50%;border:1px solid currentColor}
+.cp i.f{background:currentColor}
+.lv1{background:color-mix(in srgb,var(--accent) 6%,var(--surface))}
+.lv2{background:color-mix(in srgb,var(--accent) 18%,var(--surface))}
+.lv3{background:color-mix(in srgb,var(--accent) 32%,var(--surface))}
+.lv4{background:color-mix(in srgb,var(--accent) 50%,var(--surface))}
+.lv5{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.clegend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;color:var(--muted);margin:0 0 12px}
+.clegend span{display:flex;align-items:center;gap:6px}
+.clegend .sw{width:14px;height:14px;border-radius:3px;border:1px solid var(--line);display:block}
+@media (max-width:380px){.ctile .cn{font-size:11px}}
+.linkbtn.music{display:inline-flex;align-items:center;gap:6px;font-family:var(--body)}
+.linkbtn.music .eq{display:inline-flex;align-items:flex-end;gap:2px;height:12px}
+.linkbtn.music .eq i{display:block;width:2px;height:4px;background:currentColor;border-radius:1px}
+.linkbtn.music.on{border-color:var(--accent);color:var(--accent)}
+.linkbtn.music.on .eq i{animation:eq 1.1s ease-in-out infinite}
+.linkbtn.music.on .eq i:nth-child(2){animation-delay:-.35s}
+.linkbtn.music.on .eq i:nth-child(3){animation-delay:-.7s}
+@keyframes eq{0%,100%{height:3px}50%{height:12px}}
+.top-r{flex-wrap:wrap;justify-content:flex-end}
+.snd{display:flex;gap:6px}
+.snd-b{font-size:13px;padding:6px 10px}
+.snd-b.off{color:var(--muted);border-style:dashed}
+/* quiz screen: everything fits in one viewport, no scrolling */
+body.quizmode{padding-block:10px 12px;min-height:0}
+body.quizmode .top{margin-bottom:12px;padding-bottom:8px}
+body.quizmode .route{margin-bottom:12px}
+body.quizmode .route-head{margin-bottom:8px}
+body.quizmode .chap{font-size:20px;line-height:1.4}
+body.quizmode .chs{margin-top:4px}
+body.quizmode .scene{padding:18px 16px 16px}
+body.quizmode .loc{margin-bottom:6px}
+body.quizmode .story{font-size:clamp(18px,4.6vw,23px);line-height:1.5;margin-bottom:14px}
+body.quizmode .choices{gap:10px}
+body.quizmode .choice{min-height:0;padding:11px 14px;line-height:1.55}
+body.quizmode .quiz-foot{margin-top:10px}
+@media (max-height:700px){
+  body.quizmode .chs{display:none}
+  body.quizmode .top{margin-bottom:8px}
+  body.quizmode .route{margin-bottom:8px}
+  body.quizmode .scene{padding:14px 14px 12px}
+  body.quizmode .story{font-size:clamp(17px,4.3vw,21px);margin-bottom:10px}
+  body.quizmode .choice{padding:9px 12px;font-size:15px}
+  body.quizmode .choices{gap:8px}
+}
+@media (max-width:560px){body.quizmode .hint{display:none}body.quizmode .brand span{display:none}}
+body.quizmode .top-r>span:first-child{display:none}
+body.quizmode .top{flex-wrap:nowrap}
+body.quizmode .top-r{flex-wrap:nowrap}
+body.quizmode .linkbtn{min-height:34px;padding:4px 10px;font-size:13px}
+/* side story: 256 islands */
+.exnote{margin:14px 0 0;padding:12px 14px;border:1px dashed var(--sea);border-radius:4px;font-size:14px;color:var(--ink);max-width:36em}
+.exnote b{color:var(--sea);font-weight:500}
+.exmap{margin-top:22px}
+.exmap .sec-t{margin-bottom:8px}
+.m256{display:grid;grid-template-columns:repeat(16,minmax(0,1fr));border:1px solid var(--ink);border-radius:3px;background:var(--surface);padding:4px}
+.mi{aspect-ratio:1;display:grid;place-items:center;min-width:0}
+.mi::after{content:"";width:34%;height:34%;border-radius:50%;border:1px solid var(--muted);display:block}
+.mi.got::after{background:var(--accent);border-color:var(--accent)}
+.mi.me::after{width:78%;height:78%;background:var(--accent);border-color:var(--ink);box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 30%,transparent)}
+.passport.ex .code{font-size:clamp(30px,8.6vw,52px);white-space:nowrap}
+.passport.ex .pp-main h2{font-size:clamp(22px,6vw,30px)}
+.nb{display:inline-block}
+.atlas.x{grid-template-columns:repeat(16,minmax(0,1fr))}
+.atlas.x .isle .dot{width:6px;height:6px;border-width:1px}
+.atlas.x .isle.me .dot{box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 28%,transparent)}
+.atlas-wrap.x{padding:10px 8px 10px}
+.exsel{display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px 12px;align-items:center;margin:0 0 14px}
+.exsel label{font-family:var(--mono);font-size:12px;letter-spacing:.1em;color:var(--muted)}
+.exsel select{min-height:44px;font:inherit;font-size:15px;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:3px;padding:6px 10px;min-width:0;width:100%}
+.exsel select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.mapnote{margin:8px 0 0;font-size:13px;color:var(--muted)}
+.shot{margin-top:18px;padding:14px;border:1px solid var(--line);border-radius:4px;background:var(--surface)}
+.shot img{display:block;width:100%;height:auto;border:1px solid var(--line)}
+.shot p{margin:10px 0 0;font-size:13px;color:var(--muted)}
+.shot .btn-row{margin-top:12px}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
+</style>
+
+<div class="app">
+  <header class="top">
+    <button class="brand" id="brand" data-act="intro"><b>六十四島</b><span>ISLANDS · 64</span></button>
+    <div class="top-r" id="topr"></div>
+  </header>
+  <main id="root"></main>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+/* ---------- data ---------- */
+var AXES=[
+  ["EI","E","I","外向","內向"],
+  ["SN","S","N","實感","直覺"],
+  ["TF","T","F","思考","情感"],
+  ["JP","J","P","判斷","感知"],
+  ["AO","A","O","果斷","糾結"],
+  ["HC","H","C","溫暖","高冷"]
+];
+var POLE={},P2A={},LEFT={};
+AXES.forEach(function(a){
+  POLE[a[1]]=a[3];POLE[a[2]]=a[4];
+  P2A[a[1]]=a[0];P2A[a[2]]=a[0];
+  LEFT[a[0]]=a[1];
+});
+
+/* side story axes: the two original extra axes, lowercase poles so they never clash with A/O and H/C */
+var AXX=[["CA","c","a","穩定","敏感"],["LG","l","g","獨行","同行"]];
+var AX8=AXES.concat(AXX);
+AXX.forEach(function(a){POLE[a[1]]=a[3];POLE[a[2]]=a[4];P2A[a[1]]=a[0];P2A[a[2]]=a[0];LEFT[a[0]]=a[1];});
+function q(ax,s,a,b){return {ax:ax,s:s,c:[a,b]};}
+function qw(ax,s,a,b){return {ax:ax,s:s,c:[a,b],w:1.5};}
+var CH=[
+ {name:"渡口清晨",qs:[
+  q("EI","船靠岸，碼頭擠滿陌生旅人。你會——",["E","主動找人聊聊今天的航班和天氣"],["I","站到一旁看地圖，等人少一點再走"]),
+  q("SN","地圖上有一條標示清楚的大路，旁邊還有一條沒有名字的小徑。",["S","走大路，已經有人驗證過"],["N","走小徑，想看它通到哪裡"]),
+  q("TF","同行的旅人弄丟了船票，急得快哭了。你先——",["T","問清楚在哪裡弄丟、最後一次看到是什麼時候，再一起找"],["F","先安撫他：「別急，我陪你。」"]),
+  q("JP","說到今天的行程，你通常——",["J","前一晚就排好順序，還留了備案"],["P","到了再看，哪裡有趣就往哪裡去"]),
+  q("AO","船票上的出發時間被改了，你只剩十分鐘。",["A","馬上決定改搭哪一班，邊走邊處理"],["O","站在原地比較每個方案，想找出最划算的那一個"]),
+  q("HC","旅店櫃檯的店員看起來很累。",["H","笑著寒暄幾句，問他今天還好嗎"],["C","辦完手續就走，保持禮貌的距離"])
+ ]},
+ {name:"午間市集",qs:[
+  q("EI","市集中央的舞台，主持人邀請觀眾上來玩遊戲。",["E","舉手，上去玩玩看"],["I","往後退一步，看別人玩就很好"]),
+  q("SN","攤販遞來一種沒見過的水果。你最想先知道——",["S","味道、產地，還有怎麼吃"],["N","它像什麼、背後有什麼故事"]),
+  q("TF","兩個攤販為了價格吵起來，請你評理。你會——",["T","看誰的說法符合規則與事實"],["F","想辦法讓兩邊都不丟面子"]),
+  q("JP","你買了一堆東西，要打包了。",["J","分類裝好，每樣都有固定位置"],["P","全部塞進袋子，要用再翻"]),
+  q("AO","兩個攤位賣的東西差不多，價錢只差一點。",["A","看順眼就買，不回頭"],["O","來回比較好幾次，還是下不了手"]),
+  q("HC","攤販熱情地招呼你試吃。",["H","笑著聊起來，順便稱讚他的手藝"],["C","點頭致意，安靜試吃，沒興趣就直接離開"])
+ ]},
+ {name:"山徑遠行",qs:[
+  q("EI","登山途中，一支旅行團邀你同行。",["E","好啊，有伴更熱鬧"],["I","婉拒，想自己安靜地走"]),
+  q("SN","山頂被霧蓋住了。你判斷方向主要靠——",["S","腳下的路況和路標這些具體線索"],["N","整體的感覺和直覺的推測"]),
+  q("TF","隊友扭傷了腳，天色漸晚，行程被拖慢。",["T","重新規劃，做出對整隊最有效率的決定"],["F","先照顧他，大家慢慢走也行"]),
+  q("JP","山路出現岔口，沒有任何標示。",["J","停下來討論，選定一條就走到底"],["P","先走走看，不對再折返"]),
+  q("AO","霧越來越濃，要決定繼續上山還是折返。",["A","很快拍板，決定了就不再拖"],["O","反覆評估各種風險，遲遲定不下來"]),
+  q("HC","山徑上迎面走來另一位獨行的旅人。",["H","主動打招呼，順便分享補給"],["C","輕輕點頭，各走各的路"])
+ ]},
+ {name:"雨夜驛站",qs:[
+  q("EI","大雨把所有人困在同一間驛站。",["E","跟鄰桌聊起來，時間過得快"],["I","找個角落看書，或乾脆發呆"]),
+  q("SN","說故事時間，你最愛聽——",["S","真實發生過的事，細節清楚"],["N","天馬行空的點子，可以一直延伸"]),
+  q("TF","有人說了個故事，你覺得邏輯有漏洞，但大家都很感動。",["T","忍不住指出漏洞"],["F","先感受那份感動，氣氛要緊"]),
+  q("JP","老闆說明天可能放晴，也可能封路。",["J","先擬好兩套方案"],["P","明天再說，睡一覺看看"]),
+  q("AO","老闆問你明天幾點叫醒、早餐要吃什麼。",["A","立刻回答，簡單明確"],["O","說「讓我想一下」，睡前還在猶豫"]),
+  q("HC","一位陌生旅客獨自坐在角落吃飯，看起來有點悶。",["H","走過去問他要不要拼桌"],["C","不打擾他，想說話自然會開口"])
+ ]},
+ {name:"星光營火",qs:[
+  q("EI","營火晚會，輪到每個人分享一件事。",["E","想到什麼就說，邊講邊整理"],["I","先在心裡想好才開口，或選擇最後一個"]),
+  q("SN","有人問你：十年後想成為什麼樣的人？",["S","具體的職位、地點與生活"],["N","一個模糊但很強烈的畫面或感覺"]),
+  q("TF","朋友問你他的新計畫好不好，你看出了一些問題。",["T","直接說出風險，這才幫得上他"],["F","先肯定他的熱情，再慢慢說出擔心"]),
+  q("JP","旅程快結束了，你回頭看這趟行程。",["J","清單大多打了勾，很有成就感"],["P","比起完成度，更記得那些意外的插曲"]),
+  q("AO","朋友臨時邀你加入一趟長途旅行，明早就出發。",["A","想一下就答應或拒絕，不多糾結"],["O","列出各種可能，到最後一刻都還在掙扎"]),
+  q("HC","營火邊氣氛很熱，大家開始說笑話。",["H","帶頭開玩笑，把氣氛炒熱"],["C","微笑聽著，偶爾才說一句"])
+ ]}
+];
+
+var CHX=[
+ {name:"下錨之夜",qs:[
+  q("EI","夜航船的交誼艙裡擠滿了人，大家都在等天亮。",["E","加入人群，聽大家聊今晚看到的海光"],["I","走到甲板一角，聽著浪聲獨處"]),
+  q("SN","海面浮著一層微微發光的東西。",["S","先確認它是什麼、離船多遠、安不安全"],["N","想像它是不是某種訊號，或一個故事的開頭"]),
+  q("TF","船上的廚師把今晚的魚煮焦了，船員們面露難色。",["T","直接指出火候哪裡出錯，下次改進"],["F","先說一聲「辛苦了」，替他留點面子"]),
+  q("JP","船長宣布明天可能改道。",["J","立刻重新排好物資與時間表"],["P","看明天的天氣再說，船到橋頭自然直"]),
+  q("AO","儀表上同時亮起兩盞黃燈，要選一個先處理。",["A","馬上挑一個動手"],["O","把兩邊的風險比來比去，遲遲不敢動"]),
+  q("HC","同艙的新船員看起來很緊張。",["H","倒杯熱茶，找話題聊開"],["C","禮貌點頭，讓他自己慢慢適應"]),
+  q("CA","半夜，船身忽然大幅搖晃了一下。",["c","穩住身體，等它平靜下來再說"],["a","一下子清醒，擔心是不是出了什麼問題"]),
+  q("LG","有人邀你一起守夜，你也可以自己值班。",["l","自己一班，安靜地看著海"],["g","找人搭班，邊聊邊守"]),
+  q("EI","船長請大家輪流說說，為什麼想出這趟海。",["E","樂意講，講著講著越講越多"],["I","簡短帶過，說完就好"])
+ ]},
+ {name:"沉船海域",qs:[
+  q("CA","前方浮出一艘巨大的沉船黑影。",["c","保持鎮定，照流程一步一步觀察"],["a","心跳一下加快，腦中冒出各種最壞的畫面"]),
+  q("LG","探勘沉船需要分組。",["l","自己一組，照自己的節奏看"],["g","找人同組，邊走邊討論"]),
+  q("EI","通訊器響起，是其他船在呼叫。",["E","搶著接，順便寒暄幾句"],["I","讓別人去接，自己在旁邊聽"]),
+  q("SN","沉船裡有一本泡水的航海日誌。",["S","從字跡與日期，一頁一頁整理出事實"],["N","憑殘缺的字句，拼出這艘船的故事"]),
+  q("TF","隊友堅持要撈起一個沒用的舊娃娃，會拖慢行程。",["T","說明時間有限，這個不值得"],["F","讓他帶上，那對他有意義"]),
+  q("JP","潛水前的準備工作。",["J","照清單逐項檢查，缺一項就不下水"],["P","大致看看就下去，邊做邊調整"]),
+  q("AO","沉船有兩個艙門，一個看起來近，一個看起來安全。",["A","馬上選一個，走到哪算哪"],["O","反覆比較兩邊，遲遲不敢伸手"]),
+  q("HC","同組的夥伴不小心打翻了你的工具箱。",["H","笑著說沒關係，一起幫忙收"],["C","平靜地自己撿起來，不多說"]),
+  q("SN","水下的牆上有一組奇怪的刻痕。",["S","先拍照量尺寸，記下數量與位置"],["N","想著它是不是某種暗號或地圖"])
+ ]},
+ {name:"無光深處",qs:[
+  q("AO","潛艇突然失去照明，要決定先上浮還是先排查。",["A","很快決定，邊做邊修正"],["O","在黑暗中反覆盤算，遲遲不能決定"]),
+  q("HC","黑暗中，旁邊的隊友手在發抖。",["H","握握他的手，輕聲安慰"],["C","用平穩的語氣說話，專心處理眼前的問題"]),
+  q("CA","外頭傳來意義不明的敲擊聲。",["c","判斷多半是水流，繼續手上的事"],["a","全身警覺，一直盯著聲音的方向"]),
+  q("LG","氧氣有限，隊伍需要分頭行動。",["l","自己負責一個區域，反而更安心"],["g","想和同伴一起行動，彼此看得見"]),
+  q("EI","等待時，有人提議輪流說說最想回去的地方。",["E","馬上第一個發言"],["I","先聽別人說，輪到再簡單說"]),
+  q("SN","前方出現一隻沒見過的發光生物。",["S","記下它的大小、顏色與動作"],["N","猜想它為什麼在這裡，有沒有別的用途"]),
+  q("JP","下潛前，隊長問你要不要先寫好一份緊急應變步驟。",["J","當然要，寫好才安心"],["P","大概記在腦子裡，遇到再說"]),
+  q("TF","有隊友的氧氣用得特別快，需要提早回去。",["T","照數據決定，該回去就不要猶豫"],["F","先問他的狀況，盡量不要讓他覺得是拖累"]),
+  q("EI","黑暗中，隊伍裡安靜得有點尷尬。",["E","主動丟個話題或笑話打破沉默"],["I","安靜也沒關係，聽著水聲就好"])
+ ]},
+ {name:"浮上水面",qs:[
+  q("TF","回程上，有人犯了一個讓大家多花時間的錯。",["T","檢討流程，下次避免"],["F","先說沒關係，大家都累了"]),
+  q("JP","快到港了，行程還剩一點空檔。",["J","整理裝備、寫下紀錄，把事情收尾"],["P","趴在甲板上看海，什麼都不做"]),
+  q("AO","港口服務台問你，要立刻出發還是先住一晚。",["A","當下就決定"],["O","想了又想，最後還是問別人"]),
+  q("HC","碼頭上圍著迎接的人群，有人朝你揮手。",["H","大力揮手回應，笑著跑過去"],["C","微笑點頭，慢慢走過去"]),
+  q("CA","回頭看，剛才的深海已經遠了。",["c","平靜地想「結束了，不錯」"],["a","還在回想剛才哪裡可以做得更好"]),
+  q("LG","旅程結束，你會怎麼收尾。",["l","一個人安靜整理這趟的回憶"],["g","約大家一起吃頓飯，聊聊這一趟"]),
+  qw("EI","回到甲板，大家圍成一圈分享剛才的發現。",["E","搶著說，邊說邊補充"],["I","等其他人說完，再補上重點"]),
+  q("SN","船員問你，剛才最印象深刻的是什麼。",["S","某個具體的畫面，像是顏色與形狀"],["N","整體的感覺，好像進入了另一個世界"]),
+  q("TF","有人說剛才的任務其實不值得冒險。",["T","要看成本與收益才能判斷"],["F","更在意大家有沒有受傷，平安就好"])
+ ]},
+ {name:"登上新岸",qs:[
+  qw("SN","新島的沙灘上，有一個你沒見過的小物件。",["S","仔細觀察它的形狀與材質"],["N","猜想它是誰留下來的，又代表什麼"]),
+  qw("TF","島民邀你參加儀式，但有些步驟你覺得沒有意義。",["T","直接問這些步驟的目的"],["F","先跟著做，感受他們為什麼重視它"]),
+  qw("JP","上島的第一天，你想怎麼安排。",["J","列出要探索的地點與順序"],["P","先隨便走走，看哪裡吸引我"]),
+  q("JP","離開前，要整理一路收集的東西。",["J","分門別類標好，整齊放進箱子"],["P","全部塞進袋子，需要時再翻"]),
+  qw("AO","島上有兩條路，一條通往山頂，一條通往港灣。",["A","憑感覺選一條就出發"],["O","把兩條路的風景與風險想了又想"]),
+  q("AO","島民問你要不要留下來，成為島上的一員。",["A","很快給出答案，不拖泥帶水"],["O","沒辦法馬上決定，需要更多時間想"]),
+  q("HC","一個小孩好奇地跑過來拉你的衣角。",["H","蹲下來笑著和他打招呼"],["C","點個頭，保持友善的距離"]),
+  q("CA","夕陽下，你想到這趟旅程快結束了。",["c","心情平靜，覺得這樣剛好"],["a","有點不安，擔心是不是有什麼遺漏"]),
+  q("LG","最後一晚，島上舉辦告別晚宴。",["l","待一下就找個安靜的角落休息"],["g","待到最後，和大家一起唱歌聊天"])
+ ]}
+];
+var TIDE={
+ CL:{n:"靜海",line:"你的情緒穩定，習慣獨自消化事情。內在像一片深水，外面起風浪也不容易被打亂。",stress:"壓力來時，先退到安靜的地方處理，再帶著答案出來。",tip:"旅伴別一直追問，給一點空間就好。"},
+ CG:{n:"暖陽",line:"你的情緒平穩，又願意與人同行。身邊的人在你旁邊會覺得安心，也願意一起往前。",stress:"壓力來時，會找人商量，並帶著大家一起穩住。",tip:"偶爾也讓自己當被照顧的那一個。"},
+ AL:{n:"暗潮",line:"你感受細膩、標準很高，波動多半留在自己心裡。你看得見別人看不見的細節。",stress:"壓力來時，會在腦中反覆推演，需要一段時間才放得下。",tip:"試著把想法說出口，不必全都自己扛。"},
+ AG:{n:"星火",line:"你感受強烈，又重視連結。為在乎的人與事全力以赴，也容易被氣氛牽動。",stress:"壓力來時，會想找人說，說出來才有辦法整理。",tip:"替自己設一個「先停一下」的小儀式。"}
+};
+var TORDER=["CL","CG","AL","AG"];
+var TCHAL={
+ CL:"情緒少外露，旁人容易以為你什麼都處理得來，你也更少開口求助。",
+ CG:"太想維持團體的穩定，容易把自己的需求往後放。",
+ AL:"標準高又愛自省，容易反覆檢討自己，也不容易開口求助。",
+ AG:"感受強烈又在乎連結，容易被氣氛牽動，忙到過載才發現累了。"
+};
+var TWORK={
+ CL:"適合能自己掌控節奏的獨立作業，專注型的工作會很自在。",
+ CG:"適合穩定協作的團隊，你能成為讓人放心的夥伴。",
+ AL:"適合重視品質與細節的專業工作，請替自己保留安靜的深度工作時段。",
+ AG:"適合有使命感、與人互動密切的工作，也要記得替自己排休息。"
+};
+
+var BASE={
+ INTJ:{n:"建築師",tag:"把遠景畫成圖紙",desc:"你看得遠，也看得細。習慣先在腦中完成整張藍圖，再一步步施工，對沒有效率的事情耐心有限。",gift:"長期規劃、獨立判斷、把複雜問題拆成步驟。",trap:"容易把「我已經想清楚了」當成不必再聽別人說。",mate:"ENFP"},
+ INTP:{n:"邏輯學家",tag:"在想法裡開礦",desc:"你對「為什麼」有近乎執著的好奇，喜歡拆解系統、找出隱藏的規律，一個好問題能讓你想一整晚。",gift:"抽象分析、獨創視角、跨領域連結。",trap:"想法很多，落地的很少，常停在「差不多懂了」。",mate:"ENTJ"},
+ ENTJ:{n:"指揮官",tag:"替船隊定航向",desc:"你天生會看見缺口，並且動手補上。目標一旦定下，就會召集人、排時程，一路推到完成。",gift:"決斷力、調度資源、設定高標準。",trap:"速度太快時，容易忽略同伴跟不上的聲音。",mate:"INTP"},
+ ENTP:{n:"辯論家",tag:"把每個岔路都試一遍",desc:"你反應快、點子多，喜歡挑戰既有說法。討論越有火花越投入，常把爭論當成一種遊戲。",gift:"靈活應變、創意發想、說服力。",trap:"新鮮感退去後，容易丟下做到一半的事。",mate:"INFJ"},
+ INFJ:{n:"提倡者",tag:"安靜的燈塔",desc:"你話不多，卻很能看見人心背後的原因。你在意意義，願意為值得的事長期投入。",gift:"洞察力、同理心、堅定的價值觀。",trap:"習慣把期待藏在心裡，累了也不說。",mate:"ENTP"},
+ INFP:{n:"調停者",tag:"帶著內在的海圖",desc:"你有一套細緻的內在價值，在意真誠與美感。外表溫和，遇到違背信念的事卻很堅持。",gift:"想像力、真誠、對他人的體貼。",trap:"理想與現實落差大時，容易自責或退縮。",mate:"ENFJ"},
+ ENFJ:{n:"主人公",tag:"讓整艘船同心",desc:"你自然會注意到每個人的狀態，擅長鼓勵、串聯，讓大家覺得自己被需要。",gift:"感染力、溝通、培育他人。",trap:"太在意大家的感受，常忘了自己也需要被照顧。",mate:"INFP"},
+ ENFP:{n:"競選者",tag:"點亮每個港口",desc:"你對人與可能性都充滿好奇，熱情會感染身邊的人。你需要自由、新鮮，以及有意義的連結。",gift:"熱情、創意、快速與人熟起來。",trap:"同時開太多頭，後勁不足時容易失落。",mate:"INTJ"},
+ ISTJ:{n:"物流師",tag:"準時抵達的補給船",desc:"你重視承諾與秩序，答應的事就會做到。喜歡清楚的規則和可以驗證的事實。",gift:"可靠、細心、有條理的執行力。",trap:"面對突然的改變，會比別人更需要時間適應。",mate:"ESFP"},
+ ISFJ:{n:"守護者",tag:"默默修好船帆的人",desc:"你記得別人的需要，習慣用實際行動表達關心，是團體裡最安定的後盾。",gift:"體貼、耐心、對細節的記憶。",trap:"不好意思拒絕，常把自己的需求排在最後。",mate:"ESTP"},
+ ESTJ:{n:"總經理",tag:"讓港口運轉起來",desc:"你務實、直接，擅長建立流程並確保大家照做。看見混亂，就忍不住想整理。",gift:"管理、執行、守住標準。",trap:"對不同的做事方式包容有限，容易顯得強勢。",mate:"ISFP"},
+ ESFJ:{n:"執政官",tag:"港口的暖爐",desc:"你樂於照顧人，也很會營造氣氛。你記得生日、留意誰沒說話，讓團體像一個家。",gift:"親和力、籌辦聚會、細膩的社交感知。",trap:"太在意評價，容易被他人的情緒牽著走。",mate:"ISTP"},
+ ISTP:{n:"鑑賞家",tag:"隨身帶著工具箱",desc:"你冷靜、動手能力強，喜歡弄懂東西怎麼運作。平常話不多，遇到突發狀況反而最可靠。",gift:"臨場應變、實作、把問題簡化。",trap:"不愛談感受，旁人常猜不透你在想什麼。",mate:"ESFJ"},
+ ISFP:{n:"探險家",tag:"用腳步畫地圖",desc:"你安靜、敏銳，對美和當下的感受很深。比起說服別人，更喜歡用作品與行動表達自己。",gift:"審美、溫柔、彈性。",trap:"不喜歡被安排，壓力大時容易默默躲開。",mate:"ESTJ"},
+ ESTP:{n:"企業家",tag:"第一個跳上岸的人",desc:"你行動快、膽子大，喜歡在現場解決問題。把握機會、享受挑戰，是氣氛的帶動者。",gift:"膽識、談判、臨場反應。",trap:"容易低估長期後果，對枯燥的細節缺乏耐心。",mate:"ISFJ"},
+ ESFP:{n:"表演者",tag:"讓碼頭亮起來",desc:"你活在當下，擅長把平凡的時刻變得好玩。你真誠、有感染力，也很懂得享受。",gift:"親和、表現力、帶動氣氛。",trap:"遇到需要長期堅持的事，容易被眼前的樂子分心。",mate:"ISTJ"}
+};
+
+var VAR={
+ AH:{n:"順風",line:"你做決定快，待人又溫暖。想到就動手，也不忘招呼身邊的人，容易成為團隊的火車頭。",stress:"壓力來時，會立刻採取行動，也會找人一起扛。",tip:"行動前先停一拍，確認大家都跟上了。"},
+ AC:{n:"礁岩",line:"你果斷而沉著。決定時很少猶豫，處理事情冷靜簡潔，不太把情緒掛在臉上。",stress:"壓力來時，會更安靜，把事情一件一件處理完。",tip:"偶爾說出你的想法與感受，別人才不會誤會你冷淡。"},
+ OH:{n:"暖流",line:"你重視別人的感受，也習慣反覆權衡選項。待人溫暖，卻常因為想顧全每一方而遲遲難決定。",stress:"壓力來時，會反覆推演，也會找人聊聊。",tip:"替決定設一個期限，選了就先走。"},
+ OC:{n:"濃霧",line:"你冷靜、話不多，腦中卻在盤算各種可能。外表平靜，其實一直在觀察與深思。",stress:"壓力來時，會退到安靜的地方想很久。",tip:"把想法寫下來，或說給一個信任的人聽。"}
+};
+
+var JOBS={
+ INTJ:["策略規劃","軟體架構師","研究員","數據分析","投資分析"],
+ INTP:["工程師","研究科學家","資料科學家","產品分析","學術研究"],
+ ENTJ:["經營管理","創業者","專案總監","管理顧問","法務"],
+ ENTP:["創業者","產品經理","行銷企劃","創意顧問","記者"],
+ INFJ:["諮商心理師","作家","人資","教育工作者","非營利組織"],
+ INFP:["作家","設計師","心理諮詢","編輯","藝術創作"],
+ ENFJ:["教師","人資主管","公關","社工","教練與培訓"],
+ ENFP:["行銷創意","品牌企劃","活動策劃","內容創作者","職涯輔導"],
+ ISTJ:["會計","稽核","行政管理","品質管理","法務專員"],
+ ISFJ:["護理師","行政支援","教師","客服主管","社工"],
+ ESTJ:["營運主管","專案管理","財務主管","公職","行政管理"],
+ ESFJ:["護理","活動企劃","人資","客戶成功","教育"],
+ ISTP:["機械工程","技師","資安","飛行員","工業設計"],
+ ISFP:["設計師","攝影","廚師","獸醫","手作創作"],
+ ESTP:["業務","創業","行銷","運動相關職業","危機處理"],
+ ESFP:["表演","活動主持","旅遊業","銷售","公關"]
+};
+var WORK={
+ AH:"適合要快速決策、又需要與人互動的角色，例如帶領小團隊、業務、專案推進。",
+ AC:"適合需要冷靜判斷的專業角色，例如分析、風險管理、技術決策。",
+ OH:"適合要仔細權衡、照顧多方感受的角色，例如諮詢、人資、客戶服務。",
+ OC:"適合需要深度思考的專業工作，例如研究、審校、策略分析，並替自己保留獨立工作的時間。"
+};
+var GROUPS=[
+ {k:"NT",n:"分析家",l:["INTJ","INTP","ENTJ","ENTP"]},
+ {k:"NF",n:"外交家",l:["INFJ","INFP","ENFJ","ENFP"]},
+ {k:"SJ",n:"守護者",l:["ISTJ","ISFJ","ESTJ","ESFJ"]},
+ {k:"SP",n:"探險家",l:["ISTP","ISFP","ESTP","ESFP"]}
+];
+var VORDER=["AH","AC","OH","OC"];
+function groupOf(four){for(var i=0;i<GROUPS.length;i++){if(GROUPS[i].l.indexOf(four)>-1)return GROUPS[i].k;}return "";}
+function jobsHTML(four,suf){
+  return '<ul class="jobs">'+JOBS[four].map(function(j){return '<li>'+j+'</li>';}).join("")+'</ul><p class="work">'+WORK[suf]+'</p>';
+}
+
+var KEYS={
+ INTJ:["遠見","獨立","策略思考","高標準"],INTP:["好奇","邏輯","抽象思考","彈性"],
+ ENTJ:["決斷","領導","目標導向","效率"],ENTP:["機智","創新","愛辯論","適應力"],
+ INFJ:["洞察","理想","同理","使命感"],INFP:["真誠","想像力","價值導向","敏感"],
+ ENFJ:["感染力","照顧他人","組織","責任感"],ENFP:["熱情","創意","好奇","親和"],
+ ISTJ:["負責","條理","務實","守信"],ISFJ:["體貼","細心","忠誠","耐心"],
+ ESTJ:["務實","組織","直接","責任"],ESFJ:["親和","照顧","合作","重視傳統"],
+ ISTP:["冷靜","實作","應變","獨立"],ISFP:["溫柔","審美","彈性","活在當下"],
+ ESTP:["行動","膽識","務實","社交"],ESFP:["活力","親和","表現力","享受當下"]
+};
+var STACK={
+ INTJ:["Ni","Te","Fi","Se"],INTP:["Ti","Ne","Si","Fe"],ENTJ:["Te","Ni","Se","Fi"],ENTP:["Ne","Ti","Fe","Si"],
+ INFJ:["Ni","Fe","Ti","Se"],INFP:["Fi","Ne","Si","Te"],ENFJ:["Fe","Ni","Se","Ti"],ENFP:["Ne","Fi","Te","Si"],
+ ISTJ:["Si","Te","Fi","Ne"],ISFJ:["Si","Fe","Ti","Ne"],ESTJ:["Te","Si","Ne","Fi"],ESFJ:["Fe","Si","Ne","Ti"],
+ ISTP:["Ti","Se","Ni","Fe"],ISFP:["Fi","Se","Ni","Te"],ESTP:["Se","Ti","Fe","Ni"],ESFP:["Se","Fi","Te","Ni"]
+};
+var FN={
+ Ni:["內傾直覺","在腦中把線索收斂成一個長遠的洞見或方向。"],
+ Ne:["外傾直覺","向外看見各種可能性與連結，愛問「如果……會怎樣」。"],
+ Si:["內傾實感","依靠過去的經驗與細節記憶，重視穩定與可靠。"],
+ Se:["外傾實感","全心投入當下的現場與感官，反應快、愛行動。"],
+ Ti:["內傾思考","在內心建立一套自洽的邏輯，追求精確與真正的理解。"],
+ Te:["外傾思考","用客觀的標準、流程與成果來組織外在的世界。"],
+ Fi:["內傾情感","以內在的價值觀為準，重視真誠與自我一致。"],
+ Fe:["外傾情感","敏銳感知群體的情緒，重視和諧與彼此的需要。"]
+};
+var SLOTS=["主導","輔助","第三","劣勢"];
+var CHAL={
+ INTJ:["對他人的情緒與需求不夠敏感，容易被誤會成冷淡。","計畫被打亂時會很焦躁。"],
+ INTP:["不擅長表達感受，也容易忽略截止日期。","分析得太久，遲遲不做決定。"],
+ ENTJ:["對效率不高的人缺乏耐心，容易被說太強勢。","一路往前衝，忽略了休息與情感需求。"],
+ ENTP:["不斷質疑，讓人覺得你不夠支持他們。","對例行公事和細節提不起勁。"],
+ INFJ:["理想很高，現實落差大時容易耗盡能量。","遇到衝突傾向悶著，直到忍不住爆發。"],
+ INFP:["把批評看得很重，容易自我懷疑。","瑣碎的行政事務會拖很久。"],
+ ENFJ:["把別人的問題扛在身上，容易倦怠。","被拒絕或批評時特別受傷。"],
+ ENFP:["興趣很多，難以專注到最後。","情緒低落時，需要別人的回應才安心。"],
+ ISTJ:["不喜歡意外，對新方法的接受比較慢。","容易把嚴格的標準套在別人身上。"],
+ ISFJ:["很難說「不」，常累積壓力卻不講。","對衝突和批評很敏感。"],
+ ESTJ:["對模糊與變動的耐受度較低。","太在意規矩，有時忽略了人的感受。"],
+ ESFJ:["很在意別人的評價，容易過度迎合。","遇到衝突時會很不舒服。"],
+ ISTP:["不愛承諾長期的計畫與關係。","情緒悶在心裡，旁人無從得知。"],
+ ISFP:["不喜歡被催促或被安排，壓力大時容易逃避。","難以表達自己的需求與立場。"],
+ ESTP:["衝動下做的決定，可能留下後遺症。","對理論與長期規劃缺乏耐心。"],
+ ESFP:["遇到枯燥的任務，專注力會下降。","逃避負面情緒，習慣用熱鬧蓋過去。"]
+};
+var VCHAL={
+ AH:"行動快又熱情，容易忽略細節，也可能沒注意到有人其實不同意。",
+ AC:"決定快又不太表達情緒，可能被誤解為強勢或冷漠。",
+ OH:"太在意每個人的感受又反覆考慮，容易選擇障礙，錯過時機。",
+ OC:"想很多卻不說，別人猜不透，自己也容易鑽牛角尖。"
+};
+var LVN=["","差異很大","需要磨合","可以合作","很合拍","最佳航伴"];
+function compat(a,b){
+  if(BASE[a].mate===b)return 5;
+  var s=0;
+  if(a[1]===b[1])s+=2;
+  if(a[2]===b[2])s+=1;
+  if(a[3]===b[3])s+=1;
+  if(a[0]!==b[0])s+=1;
+  return s>=4?4:(s===3?3:(s===2?2:1));
+}
+function pips(l){var s="";for(var i=1;i<=5;i++)s+='<i'+(i<=l?' class="f"':'')+'></i>';return '<span class="cp" aria-hidden="true">'+s+'</span>';}
+function compatHTML(four){
+  var tiles=GROUPS.map(function(g){return g.l.map(function(f){
+    var l=compat(four,f);
+    return '<div class="ctile lv'+l+(f===four?' self':'')+'" role="listitem" aria-label="'+f+' '+BASE[f].n+'，'+LVN[l]+(f===four?'（你的類型）':'')+'">'+
+      '<span class="cc mono">'+f+'</span><span class="cn">'+BASE[f].n+'</span>'+pips(l)+'</div>';
+  }).join("");}).join("");
+  var leg="";for(var i=5;i>=1;i--)leg+='<span><i class="sw lv'+i+'"></i>'+LVN[i]+'</span>';
+  var low=[];GROUPS.forEach(function(g){g.l.forEach(function(f){if(compat(four,f)===1)low.push(f+" "+BASE[f].n);});});
+  var best=BASE[four].mate;
+  return '<p>最合拍的航伴是 <b>'+best+' '+BASE[best].n+'</b>。'+(low.length?'與 '+low.slice(0,4).join("、")+(low.length>4?'等 '+low.length+' 型':'')+' 的差異最大，相處時多一點溝通會更順。':'')+'</p>'+
+    '<div class="cgrid" role="list" aria-label="與 16 種類型的相容性">'+tiles+'</div>'+
+    '<div class="clegend">'+leg+'</div>'+
+    '<p class="mini">這張圖依「偏好相同或互補的多寡」估算，用來聊天參考，並不是研究結論。任何組合都可以相處得很好，關鍵在溝通與彼此尊重。相容性以基礎型計算，不分風向。</p>';
+}
+function panelHTML(code){
+  var I=info(code),b=I.b,v=I.v,four=I.four;
+  var stack=STACK[four].map(function(f,i){
+    return '<li><span class="slot mono">'+SLOTS[i]+'</span><span><b>'+f+'</b>'+FN[f][0]+'<span class="fd">'+FN[f][1]+'</span></span></li>';
+  }).join("");
+  var letters=(four+I.suf).split("").map(function(l){return '<span class="chip"><b>'+l+'</b>'+POLE[l]+'</span>';}).join("");
+  var keys=KEYS[four].map(function(k){return '<span class="chip">'+k+'</span>';}).join("");
+  var jobs='<ul class="jobs">'+JOBS[four].map(function(j){return '<li>'+j+'</li>';}).join("")+'</ul>';
+  var badge=S.mine===code?'　你的島':'';
+  return '<article class="passport panel" id="panel" aria-label="'+code+' '+I.name+'">'+
+    '<header class="pp-head mono"><span>ISLAND · 島嶼'+badge+'</span><span>'+coord(I.n)+'</span></header>'+
+    '<div class="pp-main"><div><p class="code mono">'+four+'<span>-'+I.suf+'</span></p><h3 class="pn-name">'+I.name+'</h3><p class="tag">'+b.tag+'</p></div>'+
+    '<div class="stamp" aria-hidden="true"><span class="stamp-t">'+v.n+'</span><span class="stamp-s mono">ISLAND</span></div></div>'+
+    '<div class="pn-ctl"><button class="btn" data-nav="-1">‹ 上一座</button><button class="btn" data-nav="1">下一座 ›</button><button class="btn ghost close" data-act="closepanel">收合</button></div>'+
+    '<details class="sec" open><summary>核心特質與認知功能</summary><div class="sec-b">'+
+      '<p>'+b.desc+v.line+'</p>'+
+      '<p class="sec-t">核心關鍵字</p><div class="chips">'+keys+'</div>'+
+      '<p class="sec-t">六個傾向</p><div class="chips">'+letters+'</div>'+
+      '<p class="sec-t">認知功能堆疊　'+STACK[four].join(" → ")+'</p><ol class="fstack">'+stack+'</ol>'+
+      '<p class="mini">認知功能源自榮格的理論，是 MBTI 的延伸說法，不是問卷直接測出來的分數。</p></div></details>'+
+    '<details class="sec"><summary>常見困境與挑戰</summary><div class="sec-b">'+
+      '<ul class="plist"><li>'+b.trap+'</li><li>'+CHAL[four][0]+'</li><li>'+CHAL[four][1]+'</li><li>'+VCHAL[I.suf]+'</li></ul>'+
+      '<p class="sec-t">壓力來時</p><p>'+v.stress+'</p>'+
+      '<p class="sec-t">成長提示</p><p>'+v.tip+'</p></div></details>'+
+    '<details class="sec"><summary>適合的職涯方向</summary><div class="sec-b">'+jobs+'<p>'+WORK[I.suf]+'</p>'+
+      '<p class="mini">職涯方向依人格傾向整理，僅供參考。實際的選擇還要看你的興趣、技能與所處的環境。</p></div></details>'+
+    '<details class="sec"><summary>人格特質相容性圖表</summary><div class="sec-b">'+compatHTML(four)+'</div></details>'+
+    '</article>';
+}
+
+/* ---------- helpers ---------- */
+var KEY="islands64v2";
+function load(){try{var a=JSON.parse(localStorage.getItem(KEY)||"[]");return Array.isArray(a)?a.filter(function(x){return typeof x==="number"&&x>=0&&x<64;}):[];}catch(e){return [];}}
+function save(a){try{localStorage.setItem(KEY,JSON.stringify(a));}catch(e){}}
+var got=new Set(load());
+
+function idxOf(code){
+  var f=code.slice(0,4),v=code.slice(5);
+  var col=(f[0]==="I"?4:0)+(f[1]==="N"?2:0)+(f[2]==="F"?1:0);
+  var row=(f[3]==="P"?4:0)+(v[0]==="O"?2:0)+(v[1]==="C"?1:0);
+  return row*8+col;
+}
+function codeAt(r,c){
+  var f=((c>>2)?"I":"E")+(((c>>1)&1)?"N":"S")+((c&1)?"F":"T")+((r>>2)?"P":"J");
+  var v=(((r>>1)&1)?"O":"A")+((r&1)?"C":"H");
+  return f+"-"+v;
+}
+function coord(n){var r=n>>3,c=n&7;return (10+r*3)+"°N "+(98+c*4)+"°E";}
+function info(code){
+  var b=BASE[code.slice(0,4)],v=VAR[code.slice(5)];
+  return {code:code,four:code.slice(0,4),suf:code.slice(5),b:b,v:v,name:v.n+"・"+b.n,n:idxOf(code)};
+}
+var KEYX="islands64ex";
+function loadX(){try{var a=JSON.parse(localStorage.getItem(KEYX)||"[]");return Array.isArray(a)?a.filter(function(x){return typeof x==="number"&&x>=0&&x<256;}):[];}catch(e){return [];}}
+function saveX(a){try{localStorage.setItem(KEYX,JSON.stringify(a));}catch(e){}}
+var gotX=new Set(loadX());
+function idxEx(code){
+  var f=code.slice(0,4),w=code.slice(5,7),t=code.slice(8,10);
+  var col=(f[0]==="I"?8:0)+(f[1]==="N"?4:0)+(f[2]==="F"?2:0)+(f[3]==="P"?1:0);
+  var row=(w[0]==="O"?8:0)+(w[1]==="C"?4:0)+(t[0]==="A"?2:0)+(t[1]==="G"?1:0);
+  return row*16+col;
+}
+function infoEx(code){
+  var four=code.slice(0,4),wind=code.slice(5,7),tide=code.slice(8,10);
+  var b=BASE[four],v=VAR[wind],t=TIDE[tide];
+  return {code:code,four:four,wind:wind,tide:tide,b:b,v:v,t:t,name:v.n+"・"+t.n+"・"+b.n,n:idxEx(code)};
+}
+function codeAtEx(r,c){
+  var four=((c&8)?"I":"E")+((c&4)?"N":"S")+((c&2)?"F":"T")+((c&1)?"P":"J");
+  var w=((r&8)?"O":"A")+((r&4)?"C":"H");
+  var t=((r&2)?"A":"C")+((r&1)?"G":"L");
+  return four+"-"+w+"-"+t;
+}
+function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+
+/* ---------- ambient music (Web Audio, generated live) ---------- */
+var Music=(function(){
+  var AC=window.AudioContext||window.webkitAudioContext;
+  var M={ok:!!AC,on:false};
+  var ctx,master,send,timer,nextT=0,beat=0;
+  var BEAT=0.8,BEATS=8;
+  var CHORDS=[[48,55,59,64],[45,52,55,60],[41,48,52,57],[43,50,55,59]];
+  var MEL=[[72,76,79,83,84],[72,76,79,81,84],[72,76,77,81,84],[74,76,79,81,83]];
+  function hz(m){return 440*Math.pow(2,(m-69)/12);}
+  function note(freq,t,dur,vol,att,type,wet){
+    var o=ctx.createOscillator(),g=ctx.createGain();
+    o.type=type;o.frequency.value=freq;
+    g.gain.setValueAtTime(0.0001,t);
+    g.gain.linearRampToValueAtTime(vol,t+att);
+    g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+    o.connect(g);g.connect(master);
+    if(wet){var s=ctx.createGain();s.gain.value=wet;g.connect(s);s.connect(send);}
+    o.start(t);o.stop(t+dur+0.1);
+  }
+  function schedule(){
+    if(!M.on)return;
+    while(nextT<ctx.currentTime+1.2){
+      var bar=Math.floor(beat/BEATS)%CHORDS.length,pos=beat%BEATS;
+      if(pos===0){
+        CHORDS[bar].forEach(function(m,i){
+          note(hz(m),nextT+i*0.06,BEATS*BEAT+1.2,i===0?0.075:0.05,1.8,"sine",0.25);
+          note(hz(m+12)*1.002,nextT+i*0.06,BEATS*BEAT+0.8,0.012,2.2,"triangle",0.3);
+        });
+      }
+      if(Math.random()<(pos%2===0?0.7:0.35)){
+        var set=MEL[bar],m=set[Math.floor(Math.random()*set.length)];
+        note(hz(m),nextT+(Math.random()*0.06),2.2,0.085,0.015,"sine",0.55);
+      }
+      nextT+=BEAT;beat++;
+    }
+  }
+  M.start=function(){
+    if(!M.ok||M.on)return;
+    try{
+      if(!ctx){
+        ctx=new AC();
+        master=ctx.createGain();master.gain.value=0;master.connect(ctx.destination);
+        var d=ctx.createDelay(1.5);d.delayTime.value=BEAT*0.75;
+        var fb=ctx.createGain();fb.gain.value=0.38;
+        var lp=ctx.createBiquadFilter();lp.type="lowpass";lp.frequency.value=2200;
+        send=ctx.createGain();
+        send.connect(d);d.connect(lp);lp.connect(fb);fb.connect(d);lp.connect(master);
+      }
+      if(ctx.resume)ctx.resume();
+      M.on=true;
+      master.gain.cancelScheduledValues(ctx.currentTime);
+      master.gain.setValueAtTime(master.gain.value,ctx.currentTime);
+      master.gain.linearRampToValueAtTime(0.55,ctx.currentTime+2.5);
+      nextT=ctx.currentTime+0.1;beat=0;
+      schedule();
+      timer=setInterval(schedule,250);
+    }catch(e){M.on=false;}
+  };
+  M.stop=function(){
+    if(!M.on)return;
+    M.on=false;
+    clearInterval(timer);
+    try{
+      master.gain.cancelScheduledValues(ctx.currentTime);
+      master.gain.setValueAtTime(master.gain.value,ctx.currentTime);
+      master.gain.linearRampToValueAtTime(0,ctx.currentTime+0.8);
+    }catch(e){}
+  };
+  M.pause=function(){if(ctx&&M.on&&ctx.suspend)ctx.suspend();};
+  M.resume=function(){if(ctx&&M.on&&ctx.resume)ctx.resume();};
+  return M;
+})();
+var MKEY="islands64music";
+function musicPref(){try{var v=localStorage.getItem(MKEY);return v===null?true:v==="1";}catch(e){return true;}}
+function setMusicPref(v){try{localStorage.setItem(MKEY,v?"1":"0");}catch(e){}}
+var wantAuto=musicPref();
+
+/* ---------- sound effects: synthesized with Web Audio, no audio files ---------- */
+var Au=(function(){
+  var ctx=null,sfxG,noiseBuf,on=true;
+  try{var j=JSON.parse(localStorage.getItem("islands64snd")||"null");if(j)on=j.s!==0;}catch(e){}
+  function persist(){try{localStorage.setItem("islands64snd",JSON.stringify({s:on?1:0}));}catch(e){}}
+  var SCALE=[523.25,587.33,659.25,783.99,880,1046.5];
+  function init(){
+    if(ctx)return true;
+    var AC=window.AudioContext||window.webkitAudioContext;
+    if(!AC)return false;
+    try{ctx=new AC();}catch(e){ctx=null;return false;}
+    var master=ctx.createGain();master.gain.value=0.8;master.connect(ctx.destination);
+    var conv=ctx.createConvolver(),len=Math.floor(ctx.sampleRate*1.8),ir=ctx.createBuffer(2,len,ctx.sampleRate),c,i;
+    for(c=0;c<2;c++){var d=ir.getChannelData(c);for(i=0;i<len;i++){d[i]=(Math.random()*2-1)*Math.pow(1-i/len,3);}}
+    conv.buffer=ir;
+    var wet=ctx.createGain();wet.gain.value=0.35;conv.connect(wet);wet.connect(master);
+    sfxG=ctx.createGain();sfxG.gain.value=0.9;sfxG.connect(master);sfxG.connect(conv);
+    var nl=ctx.sampleRate;noiseBuf=ctx.createBuffer(1,nl,ctx.sampleRate);
+    var nd=noiseBuf.getChannelData(0);for(i=0;i<nl;i++){nd[i]=Math.random()*2-1;}
+    return true;
+  }
+  function tone(dest,f,t,dur,type,vol,att){
+    var o=ctx.createOscillator(),g=ctx.createGain();
+    o.type=type;o.frequency.value=f;
+    g.gain.setValueAtTime(0.0001,t);
+    g.gain.linearRampToValueAtTime(vol,t+att);
+    g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+    o.connect(g);g.connect(dest);o.start(t);o.stop(t+dur+0.05);
+  }
+  function bell(dest,f,t,vol,dur){
+    tone(dest,f,t,dur,"sine",vol,0.01);
+    tone(dest,f*2,t,dur*0.55,"sine",vol*0.22,0.01);
+  }
+  function unlock(){
+    if(!init())return;
+    if(ctx.state==="suspended")ctx.resume();
+  }
+  function sfx(n,a){
+    if(!on||!ctx||ctx.state==="closed")return;
+    var t=ctx.currentTime+0.01;
+    if(n==="tick"){tone(sfxG,1250,t,0.07,"triangle",0.12,0.004);}
+    else if(n==="pick"){
+      var f=a?783.99:659.25;
+      tone(sfxG,f,t,0.4,"triangle",0.34,0.005);
+      tone(sfxG,f*2,t,0.2,"sine",0.08,0.005);
+    }
+    else if(n==="wave"){
+      var s=ctx.createBufferSource(),fl=ctx.createBiquadFilter(),g=ctx.createGain();
+      s.buffer=noiseBuf;fl.type="lowpass";fl.Q.value=0.7;
+      fl.frequency.setValueAtTime(250,t);
+      fl.frequency.exponentialRampToValueAtTime(1400,t+0.25);
+      fl.frequency.exponentialRampToValueAtTime(300,t+0.55);
+      g.gain.setValueAtTime(0.0001,t);
+      g.gain.linearRampToValueAtTime(0.16,t+0.22);
+      g.gain.exponentialRampToValueAtTime(0.0001,t+0.6);
+      s.connect(fl);fl.connect(g);g.connect(sfxG);s.start(t);s.stop(t+0.65);
+    }
+    else if(n==="chapter"){
+      [659.25,783.99,1046.5].forEach(function(f,k){bell(sfxG,f,t+k*0.12,0.26,1.6);});
+      sfx("wave");
+    }
+    else if(n==="start"){
+      var o=ctx.createOscillator(),g2=ctx.createGain();
+      o.type="sine";o.frequency.setValueAtTime(300,t);o.frequency.exponentialRampToValueAtTime(900,t+0.4);
+      g2.gain.setValueAtTime(0.0001,t);g2.gain.linearRampToValueAtTime(0.2,t+0.1);g2.gain.exponentialRampToValueAtTime(0.0001,t+0.5);
+      o.connect(g2);g2.connect(sfxG);o.start(t);o.stop(t+0.55);
+      bell(sfxG,1046.5,t+0.35,0.22,1.4);
+    }
+    else if(n==="arrive"){
+      [523.25,659.25,783.99,1046.5,1318.5].forEach(function(f,k){bell(sfxG,f,t+k*0.11,0.26,1.8);});
+      var o2=ctx.createOscillator(),g3=ctx.createGain(),ts=t+0.25;
+      o2.type="sine";o2.frequency.setValueAtTime(140,ts);o2.frequency.exponentialRampToValueAtTime(45,ts+0.35);
+      g3.gain.setValueAtTime(0.5,ts);g3.gain.exponentialRampToValueAtTime(0.0001,ts+0.4);
+      o2.connect(g3);g3.connect(sfxG);o2.start(ts);o2.stop(ts+0.45);
+    }
+    else if(n==="isle"){
+      bell(sfxG,SCALE[(a||0)%SCALE.length],t,0.3,1.1);
+    }
+  }
+  return {
+    get s(){return on;},
+    setS:function(v){on=v;persist();if(v)unlock();},
+    sfx:sfx,unlock:unlock
+  };
+})();
+function sndBtns(){
+  return '<button class="linkbtn snd-b'+(Au.s?'':' off')+'" data-act="sfx" aria-pressed="'+Au.s+'">音效 '+(Au.s?'開':'關')+'</button>';
+}
+
+/* ---------- state ---------- */
+var root=document.getElementById("root");
+var topr=document.getElementById("topr");
+var brand=document.getElementById("brand");
+var S={screen:"intro",mode:"main",order:[],flip:[],ans:[],i:0,mine:null,counts:null,tot:null,exMine:null,exCounts:null,exTot:null,exSel:null,sel:null,filter:"all",lock:false};
+function chs(){return S.mode==="ex"?CHX:CH;}
+
+function startGame(mode){
+  S.mode=mode==="ex"?"ex":"main";
+  S.order=[];S.flip=[];S.ans=[];S.i=0;S.lock=false;
+  chs().forEach(function(ch,ci){
+    var ids=shuffle(ch.qs.map(function(_,k){return k;}));
+    ids.forEach(function(k){S.order.push({c:ci,k:k});S.flip.push(Math.random()<0.5);});
+  });
+  S.screen="quiz";render();
+}
+function finish(){
+  var ex=S.mode==="ex",axes=ex?AX8:AXES,counts={},tot={};
+  axes.forEach(function(a){counts[a[0]]=0;tot[a[0]]=0;});
+  S.order.forEach(function(o){var qq=chs()[o.c].qs[o.k];tot[qq.ax]+=(qq.w||1);});
+  S.ans.forEach(function(p,i){var o=S.order[i],qq=chs()[o.c].qs[o.k],ax=P2A[p];if(p===LEFT[ax])counts[ax]+=(qq.w||1);});
+  function win(a){return counts[a[0]]*2>tot[a[0]]?a[1]:a[2];}
+  var code="";
+  if(ex){
+    code=win(AXES[0])+win(AXES[1])+win(AXES[2])+win(AXES[3])+"-"+win(AXES[4])+win(AXES[5])+"-"+win(AXX[0]).toUpperCase()+win(AXX[1]).toUpperCase();
+    S.exCounts=counts;S.exTot=tot;S.exMine=code;
+    gotX.add(idxEx(code));saveX(Array.from(gotX));
+    S.screen="exresult";render();Au.sfx("arrive");
+    return;
+  }
+  AXES.forEach(function(a,i){code+=win(a);if(i===3)code+="-";});
+  S.counts=counts;S.tot=tot;S.mine=code;S.sel=null;
+  var n=idxOf(code);got.add(n);save(Array.from(got));
+  S.screen="result";render();Au.sfx("arrive");
+}
+
+/* ---------- result image: drawn on a canvas, height measured first so nothing runs past the edge ---------- */
+var Shot=(function(){
+  var W=1080,PAD=84,CW=W-PAD*2;
+  var C={bg:"#F5F8FA",ink:"#0E2233",muted:"#566B7B",line:"#B4C4D0",wash:"#D5E0E8",accent:"#C81E65",sea:"#176F80"};
+  var DISP='"LXGW WenKai TC","Kaiti TC","DFKai-SB",serif';
+  var BODY='"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif';
+  var MONO='"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace';
+  var CLOSE="，。、；：！？）」』】》…,.;:!?)]}";
+  function wrap(ctx,text,maxW){
+    var toks=text.match(/[A-Za-z0-9][A-Za-z0-9\-_.%]*|[\s\S]/g)||[],lines=[],cur="";
+    toks.forEach(function(t){
+      var test=cur+t;
+      if(cur&&ctx.measureText(test).width>maxW&&CLOSE.indexOf(t)<0&&!/^\s$/.test(t)){lines.push(cur);cur=t;}
+      else cur=test;
+    });
+    if(cur)lines.push(cur);
+    return lines;
+  }
+  function run(ctx,m,draw){
+    var y=PAD-8;
+    function T(s,x,cy,font,color,align){
+      ctx.font=font;ctx.fillStyle=color;ctx.textAlign=align||"left";ctx.textBaseline="middle";
+      if(draw)ctx.fillText(s,x,cy);
+      return ctx.measureText(s).width;
+    }
+    function P(s,x,maxW,font,color,lh){
+      ctx.font=font;
+      var ls=wrap(ctx,s,maxW);
+      for(var i=0;i<ls.length;i++){T(ls[i],x,y+lh*i+lh/2,font,color);}
+      y+=ls.length*lh;
+    }
+    function dash(){
+      if(!draw)return;
+      ctx.save();ctx.strokeStyle=C.line;ctx.lineWidth=2;ctx.setLineDash([10,10]);
+      ctx.beginPath();ctx.moveTo(PAD,y);ctx.lineTo(W-PAD,y);ctx.stroke();ctx.restore();
+    }
+    /* header */
+    T(m.label,PAD,y+14,"500 24px "+MONO,C.sea);
+    T(m.coord,W-PAD,y+14,"400 24px "+MONO,C.sea,"right");
+    y+=44;dash();y+=34;
+    /* code, name, stamp */
+    var top=y,mainW=CW-230;
+    var w1=T(m.four,PAD,y+52,"500 92px "+MONO,C.ink);
+    T(m.suf,PAD+w1+4,y+62,"500 52px "+MONO,C.accent);
+    y+=118;
+    P(m.name,PAD,mainW,"700 56px "+DISP,C.ink,76);
+    y+=4;
+    P(m.tag,PAD,mainW,"400 34px "+DISP,C.muted,50);
+    if(draw){
+      ctx.save();ctx.translate(W-PAD-100,top+112);ctx.rotate(-12*Math.PI/180);
+      ctx.strokeStyle=C.accent;ctx.lineWidth=4;ctx.beginPath();ctx.arc(0,0,92,0,7);ctx.stroke();
+      ctx.lineWidth=2;ctx.beginPath();ctx.arc(0,0,80,0,7);ctx.stroke();
+      T(m.stamp,0,-8,"700 42px "+DISP,C.accent,"center");
+      T("ARRIVED",0,32,"400 16px "+MONO,C.accent,"center");
+      ctx.restore();
+    }
+    y=Math.max(y,top+232)+22;
+    /* description */
+    P(m.desc,PAD,CW,"400 32px "+BODY,C.ink,56);
+    /* axes */
+    y+=30;
+    T(m.axTitle,PAD,y+12,"400 22px "+MONO,C.muted);y+=44;
+    m.axes.forEach(function(a){
+      var lf=a.lw?"700 ":"400 ",lc=a.lw?C.ink:C.muted,rf=a.lw?"400 ":"700 ",rc=a.lw?C.muted:C.ink;
+      var x=PAD;
+      x+=T(a.ll,x,y+16,"500 26px "+MONO,a.lw?C.accent:C.muted)+10;
+      x+=T(a.ln,x,y+16,lf+"28px "+BODY,lc)+10;
+      T(a.pl+"%",x,y+17,"400 24px "+MONO,lc);
+      var xr=W-PAD;
+      xr-=T(a.rl,xr,y+16,"500 26px "+MONO,a.lw?C.muted:C.accent,"right")+10;
+      xr-=T(a.rn,xr,y+16,rf+"28px "+BODY,rc,"right")+10;
+      T((100-a.pl)+"%",xr,y+17,"400 24px "+MONO,rc,"right");
+      y+=40;
+      if(draw){
+        var bw=Math.round(CW*a.pl/100);
+        ctx.fillStyle=C.wash;ctx.fillRect(PAD,y,CW,18);
+        ctx.fillStyle=C.accent;
+        if(a.lw)ctx.fillRect(PAD,y,bw,18);else ctx.fillRect(PAD+bw,y,CW-bw,18);
+        ctx.strokeStyle=C.ink;ctx.lineWidth=2;ctx.strokeRect(PAD,y,CW,18);
+      }
+      y+=18+30;
+    });
+    /* facts */
+    y+=6;dash();y+=34;
+    m.facts.forEach(function(f){
+      T(f[0],PAD,y+20,"700 32px "+DISP,C.sea);y+=48;
+      P(f[1],PAD,CW,"400 30px "+BODY,C.ink,50);
+      y+=22;
+    });
+    /* careers */
+    T("職涯方向",PAD,y+20,"700 32px "+DISP,C.sea);y+=54;
+    var cx=PAD;
+    m.jobs.forEach(function(j){
+      ctx.font="400 28px "+BODY;
+      var w=ctx.measureText(j).width+44;
+      if(cx+w>W-PAD){cx=PAD;y+=64;}
+      if(draw){
+        ctx.fillStyle=C.bg;ctx.fillRect(cx,y,w,52);
+        ctx.strokeStyle=C.line;ctx.lineWidth=2;ctx.strokeRect(cx,y,w,52);
+      }
+      T(j,cx+22,y+27,"400 28px "+BODY,C.ink);
+      cx+=w+12;
+    });
+    y+=52+18;
+    P(m.jobsNote,PAD,CW,"400 28px "+BODY,C.muted,46);
+    /* footer */
+    y+=20;dash();y+=36;
+    T(m.foot,W/2,y+12,"400 22px "+MONO,C.muted,"center");y+=36;
+    T("以情境題做簡化的娛樂測驗，非官方 MBTI 評量",W/2,y+12,"400 22px "+BODY,C.muted,"center");y+=34;
+    return y+PAD-24;
+  }
+  function texts(m){
+    var a=[m.label,m.coord,m.four,m.suf,m.name,m.tag,m.stamp,m.desc,m.axTitle,m.jobsNote,m.foot,"以情境題做簡化的娛樂測驗，非官方 MBTI 評量","職涯方向","ARRIVED0123456789%"];
+    m.axes.forEach(function(x){a.push(x.ll,x.ln,x.rl,x.rn);});
+    m.facts.forEach(function(f){a.push(f[0],f[1]);});
+    m.jobs.forEach(function(j){a.push(j);});
+    return a.join("");
+  }
+  async function loadFonts(m){
+    try{
+      if(!document.fonts||!document.fonts.load)return;
+      var t=texts(m);
+      var specs=["400 30px "+BODY,"500 30px "+BODY,"700 30px "+BODY,"700 56px "+DISP,"400 34px "+DISP,"500 30px "+MONO,"400 30px "+MONO];
+      await Promise.race([Promise.all(specs.map(function(s){return document.fonts.load(s,t);})),new Promise(function(r){setTimeout(r,4000);})]);
+    }catch(e){}
+  }
+  async function make(m){
+    await loadFonts(m);
+    var cv=document.createElement("canvas");cv.width=W;cv.height=200;
+    var ctx=cv.getContext("2d");
+    var H=Math.ceil(run(ctx,m,false));
+    cv.height=H;ctx=cv.getContext("2d");
+    ctx.fillStyle=C.bg;ctx.fillRect(0,0,W,H);
+    ctx.strokeStyle=C.ink;ctx.lineWidth=3;ctx.strokeRect(24,24,W-48,H-48);
+    ctx.strokeStyle=C.line;ctx.lineWidth=1.5;ctx.strokeRect(38,38,W-76,H-76);
+    run(ctx,m,true);
+    return new Promise(function(res,rej){cv.toBlob(function(b){if(b)res(b);else rej(new Error("toBlob"));},"image/png");});
+  }
+  return {make:make};
+})();
+
+var Dl=null,shotBlob=null,shotName="",shotBusy=false;
+try{if(window.claude&&window.claude.use){window.claude.use("downloads").then(function(d){Dl=d||null;},function(){});}}catch(e){}
+function axRows(axes,counts,tot){
+  return axes.map(function(a){
+    var tt=tot?tot[a[0]]:5,cl=counts[a[0]];
+    return {ll:a[1].toUpperCase(),ln:a[3],rl:a[2].toUpperCase(),rn:a[4],pl:Math.round(cl/tt*100),lw:cl*2>tt};
+  });
+}
+function shotModel(){
+  if(S.screen==="exresult"){
+    var X=infoEx(S.exMine),xm=BASE[X.b.mate];
+    return {file:"六十四島外傳-"+X.code+".png",label:"外傳 · 新世界 · 抵達",coord:"水深 "+(100+X.n*4)+" 公尺",
+      four:X.four,suf:"-"+X.wind+"-"+X.tide,name:X.name,tag:X.b.tag,stamp:X.t.n,desc:X.b.desc+X.v.line+X.t.line,
+      axTitle:"八大航線的傾向",axes:axRows(AX8,S.exCounts,S.exTot),
+      facts:[["天賦",X.b.gift],["暗礁",X.b.trap],["風向・"+X.v.n,X.v.stress+X.v.tip],["潮向・"+X.t.n,X.t.stress+X.t.tip],["航伴",X.b.mate+" "+xm.n]],
+      jobs:JOBS[X.four],jobsNote:WORK[X.wind]+TWORK[X.tide],foot:"六十四島外傳・新世界"};
+  }
+  var I=info(S.mine),mm=BASE[I.b.mate];
+  return {file:"六十四島-"+I.code+".png",label:"PASSPORT · 抵達",coord:coord(I.n),
+    four:I.four,suf:"-"+I.suf,name:I.name,tag:I.b.tag,stamp:I.v.n,desc:I.b.desc+I.v.line,
+    axTitle:"六大航線的傾向",axes:axRows(AXES,S.counts,S.tot),
+    facts:[["天賦",I.b.gift],["暗礁",I.b.trap],["風向・"+I.v.n,I.v.stress+I.v.tip],["航伴",I.b.mate+" "+mm.n]],
+    jobs:JOBS[I.four],jobsNote:WORK[I.suf],foot:"六十四島 · MBTI 64 型人格航行"};
+}
+function blobToDataUrl(b){
+  return new Promise(function(res,rej){var r=new FileReader();r.onload=function(){res(r.result);};r.onerror=function(){rej(r.error);};r.readAsDataURL(b);});
+}
+function setShotMsg(t){var el=document.getElementById("shotmsg");if(el)el.textContent=t;}
+async function saveShot(){
+  if(!Dl||!shotBlob)return;
+  try{
+    await Dl.save({filename:shotName,data:shotBlob});
+    setShotMsg("已送出儲存。");
+  }catch(e){
+    var c=e&&e.code;
+    setShotMsg(c==="declined"?"已取消儲存，可以按「儲存到裝置」再試一次。":"這個畫面無法直接儲存，請長按（電腦請按右鍵）上方圖片另存。");
+  }
+}
+async function doShot(){
+  if(shotBusy)return;
+  shotBusy=true;
+  var btn=document.getElementById("shotbtn"),old=btn?btn.textContent:"";
+  if(btn){btn.disabled=true;btn.textContent="產生中…";}
+  try{
+    var m=shotModel();
+    shotBlob=await Shot.make(m);shotName=m.file;
+    var url=await blobToDataUrl(shotBlob);
+    var box=document.getElementById("shot");
+    if(box){
+      box.hidden=false;
+      box.innerHTML='<img src="'+url+'" alt="'+m.four+m.suf+' 結果圖片">'+
+        '<p id="shotmsg">'+(Dl?'已產生圖片，請在彈出的視窗確認儲存。沒有跳出的話，按下面的按鈕。':'已產生圖片。手機請長按圖片，電腦請按右鍵，選擇儲存圖片。')+'</p>'+
+        '<div class="btn-row">'+(Dl?'<button class="btn" data-act="shotsave">儲存到裝置</button>':'')+'<button class="btn ghost" data-act="shotclose">關閉預覽</button></div>';
+      var im=box.querySelector("img");
+      if(im&&im.scrollIntoView){var rm=window.matchMedia&&window.matchMedia("(prefers-reduced-motion:reduce)").matches;im.scrollIntoView({behavior:rm?"auto":"smooth",block:"nearest"});}
+    }
+    saveShot();
+  }catch(e){
+    var b2=document.getElementById("shot");
+    if(b2){b2.hidden=false;b2.innerHTML='<p id="shotmsg">圖片產生失敗，請稍後再試。</p>';}
+  }finally{
+    shotBusy=false;
+    var b3=document.getElementById("shotbtn");if(b3){b3.disabled=false;b3.textContent=old||"儲存圖片";}
+  }
+}
+
+/* ---------- views ---------- */
+function roseSVG(){
+  return '<svg class="rose" viewBox="0 0 200 200" aria-hidden="true">'+
+  '<circle cx="100" cy="100" r="84" fill="none" stroke="var(--line)" stroke-width="1.2"/>'+
+  '<circle cx="100" cy="100" r="64" fill="none" stroke="var(--line)" stroke-width="1" stroke-dasharray="2 4"/>'+
+  '<g stroke="var(--muted)" stroke-width="1" opacity=".6"><line x1="41" y1="41" x2="159" y2="159"/><line x1="159" y1="41" x2="41" y2="159"/></g>'+
+  '<polygon points="100,16 108,100 100,184 92,100" fill="var(--ink)" opacity=".9"/>'+
+  '<polygon points="16,100 100,92 184,100 100,108" fill="var(--sea)" opacity=".8"/>'+
+  '<polygon points="100,16 108,100 92,100" fill="var(--accent)"/>'+
+  '<circle cx="100" cy="100" r="5" fill="var(--bg)" stroke="var(--ink)" stroke-width="1.5"/>'+
+  '<g font-family="IBM Plex Mono,monospace" font-size="11" fill="var(--ink)" text-anchor="middle">'+
+  '<text x="100" y="10">N</text><text x="100" y="198">S</text><text x="8" y="104">W</text><text x="192" y="104">E</text></g>'+
+  '</svg>';
+}
+function boatSVG(){
+  return '<svg viewBox="0 0 30 30" width="30" height="30" aria-hidden="true"><path d="M15 3 L15 18 L5 18 Z" fill="var(--accent)"/><path d="M16.5 7 L16.5 18 L24 18 Z" fill="var(--bg)" stroke="var(--ink)" stroke-width="1.2"/><path d="M3 20 H27 L23 26 H7 Z" fill="var(--ink)"/></svg>';
+}
+
+var AXDESC={
+ EI:["從與人互動中得到能量，想到就說","從獨處中恢復能量，想清楚再說"],
+ SN:["相信看得見的事實與細節","留意模式、可能性與整體"],
+ TF:["以邏輯與原則做決定","以價值與人的感受做決定"],
+ JP:["喜歡先規劃，事情有結論才安心","喜歡保持彈性，邊走邊看"],
+ AO:["說做就做，對自己的判斷有信心，不太拖延","不輕易下決定，會反覆評估各種可能，重視選擇的正確性"],
+ HC:["開朗熱絡，善於營造輕鬆的氣氛，也留意他人的情緒","穩重沉著，少言，習慣先觀察再回應"],
+ CA:["情緒平穩，遇到壓力也能維持原本的步調","感受細膩，容易被壓力與氣氛牽動"],
+ LG:["偏好獨自行動，照自己的節奏做事","偏好與人同行，分工合作更自在"]
+};
+var GINTRO={
+ NT:"重視邏輯與策略，喜歡拆解複雜的問題。",
+ NF:"重視價值與意義，擅長理解與啟發他人。",
+ SJ:"重視責任與秩序，是團體裡可靠的支柱。",
+ SP:"重視行動與體驗，擅長在現場靈活應變。"
+};
+function vAbout(){
+  var ax=AXES.map(function(a,i){
+    var d=AXDESC[a[0]];
+    return '<div class="axrow"><div class="axhead"><b>'+a[3]+' ⟷ '+a[4]+'</b><span class="mono">'+a[1]+' / '+a[2]+'</span><em class="'+(i<4?'':'new')+'">'+(i<4?'MBTI 原有':'64 型延伸')+'</em></div>'+
+      '<div class="axsides"><span><b>'+a[1]+'</b>'+d[0]+'</span><span><b>'+a[2]+'</b>'+d[1]+'</span></div></div>';
+  }).join("");
+  var winds=VORDER.map(function(s){
+    var v=VAR[s];
+    return '<div class="wind"><header><b>'+v.n+'</b><span class="mono">'+s+'・'+POLE[s[0]]+'＋'+POLE[s[1]]+'</span></header><p>'+v.line+'</p></div>';
+  }).join("");
+  var gs=GROUPS.map(function(g){
+    return '<div class="tgi"><h4><span class="mono">'+g.k+'</span>'+g.n+'</h4><div><p>'+GINTRO[g.k]+'</p><div class="chips">'+
+      g.l.map(function(f){return '<span class="chip"><b>'+f+'</b>'+BASE[f].n+'</span>';}).join("")+'</div></div></div>';
+  }).join("");
+  return '<section class="about" aria-labelledby="about-t">'+
+    '<h2 id="about-t">認識 MBTI 64 型人格</h2>'+
+    '<p class="lead">MBTI 是由 Katharine Briggs 與 Isabel Briggs Myers 依據榮格的心理類型理論發展出來的自我報告問卷。它把人在注意力、收集資訊、做決定和面對外界時的偏好，整理成四條軸，組合出 16 種類型。</p>'+
+    '<h3>六大航線</h3><p class="sub">前四條是 MBTI 的原有四軸。後兩條是坊間常見的 64 型說法，用來把 16 型再細分成 64 型，並不是官方 MBTI 的一部分。</p>'+
+    '<div class="axlist">'+ax+'</div>'+
+    '<h3>64 = 16 × 4</h3><p class="sub">16 種基礎型各有四種「風向」，由果斷或糾結、溫暖或高冷組合而成。所以 INTJ 會有四座不同的島，代碼寫成 INTJ-AH、INTJ-AC、INTJ-OH、INTJ-OC。</p>'+
+    '<div class="formula"><span>16 型</span>×<span>4 風向</span>=<span>64 島</span></div>'+
+    '<div class="winds">'+winds+'</div>'+
+    '<h3>四大氣質群</h3><p class="sub">16 種基礎型常被歸成四群。圖鑑也是用這個分法整理的。</p>'+
+    '<div class="tgs">'+gs+'</div>'+
+    '<p class="disclaim">MBTI 描述的是偏好，不是能力高低，也不是心理狀態的診斷。這個遊戲以情境題做簡化，只供娛樂與自我探索，不是官方的 MBTI 評量。</p>'+
+    '<div class="btn-row"><button class="btn primary" data-act="start">起航</button><button class="btn" data-act="atlas">看 64 島圖鑑</button></div>'+
+    '</section>';
+}
+
+function vIntro(){
+  return '<section class="intro">'+
+    '<div class="hero"><div><p class="eyebrow">MBTI 64 型人格航行</p><h1>六十四島</h1></div>'+roseSVG()+'</div>'+
+    '<p class="lede">你會在五段旅程裡做出 30 次選擇。每一次選擇都在海圖上留下記號，最後停靠在屬於你的那座島。</p>'+
+    '<dl class="facts"><div><dt>SCENES</dt><dd>30 景</dd></div><div><dt>TIME</dt><dd>約 5 分鐘</dd></div><div><dt>ISLANDS</dt><dd>64 座島</dd></div></dl>'+
+    '<div class="btn-row"><button class="btn primary" data-act="start">起航</button><button class="btn" data-act="exintro">外傳・新世界</button><button class="btn" data-act="atlas">島嶼圖鑑</button></div>'+
+    '<p class="note"><b>64 = 16 型 × 4 種風向。</b>除了外向或內向、實感或直覺、思考或情感、判斷或感知，還加上「果斷或糾結」與「溫暖或高冷」。同樣是 INTJ，也可能是順風、礁岩、暖流或濃霧。</p>'+
+    '<p class="exnote"><b>外傳・新世界：</b>把新設計的兩條航線「情緒穩定或敏感」「獨行或同行」也加進來，共 8 條航線，16 × 16 = 256 座島。45 景，約 7 分鐘。</p>'+
+    '</section>'+vAbout();
+}
+
+function vQuiz(){
+  var CHS=chs(),cur=S.order[S.i],ch=CHS[cur.c],qq=ch.qs[cur.k],flip=S.flip[S.i];
+  var total=S.order.length;
+  var pct=S.i/total*100;
+  var ticks="";for(var t=1;t<CHS.length;t++)ticks+='<span class="tick" style="left:'+(t*100/CHS.length)+'%"></span>';
+  var chn=CHS.map(function(c,i){return '<span class="'+(i===cur.c?"on":"")+'">'+c.name+'</span>';}).join("");
+  var order=flip?[qq.c[1],qq.c[0]]:[qq.c[0],qq.c[1]];
+  var btns=order.map(function(o,k){
+    return '<button class="choice" data-pick="'+k+'"><span class="key mono">'+(k+1)+'</span><span>'+o[1]+'</span></button>';
+  }).join("");
+  var no=String(S.i+1).padStart(2,"0");
+  var posInCh=1;for(var jj=0;jj<S.i;jj++){if(S.order[jj].c===cur.c)posInCh++;}
+  return '<section class="quiz"><div class="route">'+
+    '<div class="route-head"><span class="chap">'+ch.name+'</span><span class="count mono">'+no+' / '+total+'</span></div>'+
+    '<div class="track" aria-hidden="true">'+ticks+'<div class="done" style="width:'+pct+'%"></div><div class="boat" style="left:'+pct+'%">'+boatSVG()+'</div></div>'+
+    '<div class="chs" aria-hidden="true" style="grid-template-columns:repeat('+CHS.length+',1fr)">'+chn+'</div></div>'+
+    '<article class="scene" tabindex="-1" aria-live="polite">'+
+    '<p class="loc mono">'+(S.mode==="ex"?'外傳 · ':'')+'第 '+(cur.c+1)+' 段 · 第 '+posInCh+' 景</p>'+
+    '<p class="story">'+qq.s+'</p>'+
+    '<div class="choices">'+btns+'</div></article>'+
+    '<div class="quiz-foot"><button class="btn ghost" data-act="back">上一景</button><span class="hint">也可以按鍵盤 1、2 作答</span></div>'+
+    '</section>';
+}
+
+function bars(counts,tot,axes){
+  axes=axes||AXES;
+  return '<div class="bars">'+axes.map(function(a){
+    var tt=tot?tot[a[0]]:5,cl=counts[a[0]],pl=Math.round(cl/tt*100),pr=100-pl,lw=cl*2>tt;
+    return '<div><div class="bar-labels">'+
+      '<div class="'+(lw?"win":"")+'"><b>'+a[1].toUpperCase()+'</b>'+a[3]+'<span class="pc">'+pl+'%</span></div>'+
+      '<div class="'+(lw?"":"win")+'"><span class="pc">'+pr+'%</span>'+a[4]+'<b>'+a[2].toUpperCase()+'</b></div></div>'+
+      '<div class="bar-track"><i class="'+(lw?"win":"lose")+'" style="width:'+pl+'%"></i><i class="'+(lw?"lose":"win")+'" style="width:'+pr+'%"></i></div></div>';
+  }).join("")+'</div>';
+}
+function chips(code){
+  var letters=(code.slice(0,4)+code.slice(5)).split("");
+  return '<div class="chips">'+letters.map(function(l){return '<span class="chip"><b>'+l+'</b>'+POLE[l]+'</span>';}).join("")+'</div>';
+}
+function card(code,counts,label){
+  var I=info(code),m=BASE[I.b.mate];
+  return '<article class="passport" id="card">'+
+    '<header class="pp-head mono"><span>'+label+'</span><span>'+coord(I.n)+'</span></header>'+
+    '<div class="pp-main"><div>'+
+      '<p class="code mono">'+I.four+'<span>-'+I.suf+'</span></p>'+
+      '<h2>'+I.name+'</h2><p class="tag">'+I.b.tag+'</p></div>'+
+      '<div class="stamp" aria-hidden="true"><span class="stamp-t">'+I.v.n+'</span><span class="stamp-s mono">ARRIVED</span></div></div>'+
+    '<p class="desc">'+I.b.desc+I.v.line+'</p>'+
+    '<p class="sec-t">'+(counts?"六大航線的傾向":"這座島的六個傾向")+'</p>'+
+    (counts?bars(counts,S.tot,AXES):chips(code))+
+    '<dl class="facts2">'+
+      '<div><dt>天賦</dt><dd>'+I.b.gift+'</dd></div>'+
+      '<div><dt>暗礁</dt><dd>'+I.b.trap+'</dd></div>'+
+      '<div><dt>風向</dt><dd>'+I.v.stress+'</dd></div>'+
+      '<div><dt>航伴</dt><dd>'+I.b.mate+' '+m.n+'。'+I.v.tip+'</dd></div>'+
+      '<div class="wide"><dt>職涯方向</dt><dd>'+jobsHTML(I.four,I.suf)+'</dd></div>'+
+    '</dl></article>';
+}
+
+function vAboutEx(){
+  var ax=AX8.map(function(a,i){
+    var d=AXDESC[a[0]],tag=i<4?'MBTI 原有':(i<6?'64 型延伸':'新世界新增');
+    return '<div class="axrow"><div class="axhead"><b>'+a[3]+' ⟷ '+a[4]+'</b><span class="mono">'+a[1].toUpperCase()+' / '+a[2].toUpperCase()+'</span><em class="'+(i<4?'':'new')+'">'+tag+'</em></div>'+
+      '<div class="axsides"><span><b>'+a[1].toUpperCase()+'</b>'+d[0]+'</span><span><b>'+a[2].toUpperCase()+'</b>'+d[1]+'</span></div></div>';
+  }).join("");
+  var winds=VORDER.map(function(s){var v=VAR[s];return '<div class="wind"><header><b>'+v.n+'</b><span class="mono">'+s+'・'+POLE[s[0]]+'＋'+POLE[s[1]]+'</span></header><p>'+v.line+'</p></div>';}).join("");
+  var tides=TORDER.map(function(s){var t=TIDE[s];return '<div class="wind"><header><b>'+t.n+'</b><span class="mono">'+s+'・'+POLE[s[0].toLowerCase()]+'＋'+POLE[s[1].toLowerCase()]+'</span></header><p>'+t.line+'</p></div>';}).join("");
+  return '<section class="about" aria-labelledby="aboutx-t">'+
+    '<h2 id="aboutx-t">認識 256 型人格</h2>'+
+    '<p class="lead">主線的六十四島是 16 型再加兩條航線。外傳「新世界」把新設計的另外兩條航線也放進來，一共 8 條軸，每條軸兩端，組合起來是 2 的 8 次方，也就是 256 種。</p>'+
+    '<h3>八大航線</h3><p class="sub">前四條是 MBTI 的原有四軸，中間兩條是坊間常見的 64 型說法，最後兩條是這個遊戲新設計的延伸，都不是官方 MBTI 的一部分。</p>'+
+    '<div class="axlist">'+ax+'</div>'+
+    '<h3>256 = 16 × 4 × 4</h3><p class="sub">每一種基礎型都有四種風向，每種風向底下又有四種潮向，所以 INFJ 會有 16 座不同的島。</p>'+
+    '<div class="formula"><span>16 型</span>×<span>4 風向</span>×<span>4 潮向</span>=<span>256 島</span></div>'+
+    '<h3>風向</h3><p class="sub">由果斷或糾結、溫暖或高冷組合而成，影響你做決定與待人的方式。</p><div class="winds">'+winds+'</div>'+
+    '<h3>潮向</h3><p class="sub">由情緒穩定或敏感、獨行或同行組合而成，影響你面對壓力與人群的方式。</p><div class="winds">'+tides+'</div>'+
+    '<h3>代碼怎麼讀</h3><p class="sub">以 <b>ENFP-AH-CL</b> 為例：ENFP 是基礎型，AH 是風向（果斷、溫暖），CL 是潮向（穩定、獨行）。三段合起來，就是一座島。</p>'+
+    '<p class="disclaim">256 型是這個遊戲自行延伸的分類，只供娛樂與自我探索。外傳共 45 題，每條航線 5 到 6 題。有 6 題的航線，其中一題計 1.5 分，用來避免平手。</p>'+
+    '<div class="btn-row"><button class="btn primary" data-act="startx">啟航</button><button class="btn" data-act="exatlas">新世界島嶼圖鑑</button></div>'+
+    '</section>';
+}
+function vExIntro(){
+  return '<section class="intro">'+
+    '<div class="hero"><div><p class="eyebrow">MBTI 256 型人格航行</p><h1>新世界</h1></div>'+roseSVG()+'</div>'+
+    '<p class="lede">這一次航向主線以外的海域。你會在五段旅程裡做出 45 次選擇，把兩條新的航線加進海圖，最後停靠在 256 座島中屬於你的那一座。</p>'+
+    '<dl class="facts"><div><dt>SCENES</dt><dd>45 景</dd></div><div><dt>TIME</dt><dd>約 7 分鐘</dd></div><div><dt>ISLANDS</dt><dd>256 座島</dd></div></dl>'+
+    '<div class="btn-row one"><button class="btn primary" data-act="startx">啟航</button><button class="btn" data-act="exatlas">新世界島嶼圖鑑</button><button class="btn ghost" data-act="intro">回六十四島</button></div>'+
+    '<p class="note"><b>256 = 16 型 × 4 種風向 × 4 種潮向。</b>除了風向的「果斷或糾結」「溫暖或高冷」，這裡還有潮向的「情緒穩定或敏感」「獨行或同行」。同樣是 INTJ，會有 16 座不同的島。</p>'+
+    '</section>'+vAboutEx();
+}
+function panelExHTML(code){
+  var I=infoEx(code),b=I.b,four=I.four;
+  var stack=STACK[four].map(function(f,i){
+    return '<li><span class="slot mono">'+SLOTS[i]+'</span><span><b>'+f+'</b>'+FN[f][0]+'<span class="fd">'+FN[f][1]+'</span></span></li>';
+  }).join("");
+  var ls=four.split("").concat(I.wind.split("")),tl=I.tide.split("");
+  var letters=ls.map(function(l){return '<span class="chip"><b>'+l+'</b>'+POLE[l]+'</span>';}).join("")+
+    tl.map(function(l){return '<span class="chip"><b>'+l+'</b>'+POLE[l.toLowerCase()]+'</span>';}).join("");
+  var keys=KEYS[four].map(function(k){return '<span class="chip">'+k+'</span>';}).join("");
+  var jobs='<ul class="jobs">'+JOBS[four].map(function(j){return '<li>'+j+'</li>';}).join("")+'</ul>';
+  var badge=S.exMine===code?'　你的島':'';
+  return '<article class="passport panel ex" id="panel" aria-label="'+code+' '+I.name+'">'+
+    '<header class="pp-head mono"><span>NEW WORLD · 島嶼'+badge+'</span><span>水深 '+(100+I.n*4)+' 公尺</span></header>'+
+    '<div class="pp-main"><div><p class="code mono">'+four+'<span>-'+I.wind+'-'+I.tide+'</span></p>'+
+    '<h3 class="pn-name"><span class="nb">'+I.v.n+'・</span><span class="nb">'+I.t.n+'・</span><span class="nb">'+b.n+'</span></h3><p class="tag">'+b.tag+'</p></div>'+
+    '<div class="stamp" aria-hidden="true"><span class="stamp-t">'+I.t.n+'</span><span class="stamp-s mono">ISLAND</span></div></div>'+
+    '<div class="pn-ctl"><button class="btn" data-xnav="-1">‹ 上一座</button><button class="btn" data-xnav="1">下一座 ›</button><button class="btn ghost close" data-act="closexpanel">收合</button></div>'+
+    '<details class="sec" open><summary>核心特質與認知功能</summary><div class="sec-b">'+
+      '<p>'+b.desc+I.v.line+I.t.line+'</p>'+
+      '<p class="sec-t">核心關鍵字</p><div class="chips">'+keys+'</div>'+
+      '<p class="sec-t">八個傾向</p><div class="chips">'+letters+'</div>'+
+      '<p class="sec-t">認知功能堆疊　'+STACK[four].join(" → ")+'</p><ol class="fstack">'+stack+'</ol>'+
+      '<p class="mini">認知功能源自榮格的理論，是 MBTI 的延伸說法，不是問卷直接測出來的分數。</p></div></details>'+
+    '<details class="sec"><summary>常見困境與挑戰</summary><div class="sec-b">'+
+      '<ul class="plist"><li>'+b.trap+'</li><li>'+CHAL[four][0]+'</li><li>'+CHAL[four][1]+'</li><li>'+VCHAL[I.wind]+'</li><li>'+TCHAL[I.tide]+'</li></ul>'+
+      '<p class="sec-t">壓力來時</p><p>'+I.v.stress+I.t.stress+'</p>'+
+      '<p class="sec-t">成長提示</p><p>'+I.v.tip+I.t.tip+'</p></div></details>'+
+    '<details class="sec"><summary>適合的職涯方向</summary><div class="sec-b">'+jobs+'<p>'+WORK[I.wind]+TWORK[I.tide]+'</p>'+
+      '<p class="mini">職涯方向依人格傾向整理，僅供參考。實際的選擇還要看你的興趣、技能與所處的環境。</p></div></details>'+
+    '<details class="sec"><summary>人格特質相容性圖表</summary><div class="sec-b">'+compatHTML(four)+'</div></details>'+
+    '</article>';
+}
+function vExAtlas(){
+  var h='<h2 class="page-t">新世界島嶼圖鑑</h2><p class="page-s">256 座島排成一張海圖。點選任何一座，或用下面的選單挑出基礎型與風向、潮向，下方會展開這座島的特質。走過的島會被點亮。</p>';
+  var fopts='<option value="">選擇基礎型</option>'+GROUPS.map(function(g){return g.l.map(function(f){return '<option value="'+f+'">'+f+' '+BASE[f].n+'</option>';}).join("");}).join("");
+  var wopts='<option value="">選擇風向・潮向</option>';
+  for(var r=0;r<16;r++){var c0=codeAtEx(r,0),w=c0.slice(5,7),t=c0.slice(8,10);wopts+='<option value="'+w+'-'+t+'">'+VAR[w].n+'・'+TIDE[t].n+'（'+w+'-'+t+'）</option>';}
+  var sel='<div class="exsel"><label for="selx-f">基礎型</label><select id="selx-f">'+fopts+'</select><label for="selx-w">風向・潮向</label><select id="selx-w">'+wopts+'</select></div>';
+  var g='<div class="atlas x" role="group" aria-label="新世界 256 島海圖">';
+  for(var rr=0;rr<16;rr++){for(var cc=0;cc<16;cc++){
+    var code=codeAtEx(rr,cc),n=rr*16+cc,I=infoEx(code);
+    var cls="isle x"+(gotX.has(n)?" got":"")+(S.exMine===code?" me":"")+(S.exSel===code?" sel":"");
+    g+='<button class="'+cls+'" data-xcode="'+code+'" aria-label="'+code+' '+I.name+(gotX.has(n)?'，已到訪':'')+'" aria-pressed="'+(S.exSel===code)+'" aria-controls="panel-wrap-x"><span class="dot"></span></button>';
+  }}
+  g+='</div>';
+  var legend='<div class="legend"><span class="g"><i class="dot"></i>已到訪</span><span><i class="dot"></i>未到訪</span><span>已收集 '+gotX.size+' / 256</span></div>'+
+    '<p class="axis-note">欄由左到右是 16 種基礎型，列由上到下是 16 種風向與潮向的組合，選單可以直接指定。</p>';
+  return h+sel+'<div class="atlas-wrap x">'+g+legend+'</div><div id="panel-wrap-x" hidden></div>'+
+    '<div class="after"><button class="btn primary" data-act="startx">啟航，找出我的島</button><button class="btn ghost" data-act="exintro">回新世界</button></div>';
+}
+function map256(sel){
+  var g="";
+  for(var n=0;n<256;n++){g+='<i class="mi'+(gotX.has(n)?" got":"")+(n===sel?" me":"")+'"></i>';}
+  return '<section class="exmap"><p class="sec-t">256 島海圖　已收集 '+gotX.size+' / 256</p>'+
+    '<div class="m256" role="img" aria-label="256 座島的海圖，已收集 '+gotX.size+' 座，你的島以大圓點標示">'+g+'</div>'+
+    '<p class="mapnote">欄由左到右是 16 種基礎型，列由上到下是 16 種風向與潮向的組合。</p></section>';
+}
+function cardEx(code,counts,tot){
+  var I=infoEx(code),m=BASE[I.b.mate];
+  return '<article class="passport ex" id="card">'+
+    '<header class="pp-head mono"><span>外傳 · 新世界</span><span>水深 '+(100+I.n*4)+' 公尺</span></header>'+
+    '<div class="pp-main"><div>'+
+      '<p class="code mono">'+I.four+'<span>-'+I.wind+'-'+I.tide+'</span></p>'+
+      '<h2><span class="nb">'+I.v.n+'・</span><span class="nb">'+I.t.n+'・</span><span class="nb">'+I.b.n+'</span></h2><p class="tag">'+I.b.tag+'</p></div>'+
+      '<div class="stamp" aria-hidden="true"><span class="stamp-t">'+I.t.n+'</span><span class="stamp-s mono">ARRIVED</span></div></div>'+
+    '<p class="desc">'+I.b.desc+I.v.line+I.t.line+'</p>'+
+    '<p class="sec-t">八大航線的傾向</p>'+bars(counts,tot,AX8)+
+    '<dl class="facts2">'+
+      '<div><dt>天賦</dt><dd>'+I.b.gift+'</dd></div>'+
+      '<div><dt>暗礁</dt><dd>'+I.b.trap+'</dd></div>'+
+      '<div><dt>風向・'+I.v.n+'</dt><dd>'+I.v.stress+I.v.tip+'</dd></div>'+
+      '<div><dt>潮向・'+I.t.n+'</dt><dd>'+I.t.stress+I.t.tip+'</dd></div>'+
+      '<div><dt>航伴</dt><dd>'+I.b.mate+' '+m.n+'</dd></div>'+
+      '<div class="wide"><dt>職涯方向</dt><dd>'+jobsHTML(I.four,I.wind)+'</dd></div>'+
+    '</dl></article>';
+}
+function vExResult(){
+  return cardEx(S.exMine,S.exCounts,S.exTot)+map256(idxEx(S.exMine))+
+    '<p class="foot-note">外傳共 45 題，每條航線 5 到 6 題。有 6 題的航線，其中一題計 1.5 分，用來避免平手。職涯方向是依人格傾向整理的參考。</p>'+
+    '<div class="after"><button class="btn primary" data-act="shot" id="shotbtn">儲存圖片</button><button class="btn" data-act="copy" id="copybtn">複製結果</button>'+
+    '<button class="btn" data-act="startx">再航行一次</button>'+
+    '<button class="btn" data-act="exatlas">新世界島嶼圖鑑</button>'+
+    '<button class="btn ghost" data-act="exintro">回新世界</button></div>'+
+    '<div class="shot" id="shot" hidden></div>'+
+    '<p class="said" id="said" hidden></p>';
+}
+function vResult(){
+  return card(S.mine,S.counts,"PASSPORT · 抵達")+
+    '<p class="foot-note">職涯方向是依人格傾向整理的參考，實際的選擇還要看你的興趣、技能與所處的環境。</p>'+
+    '<div class="after"><button class="btn primary" data-act="shot" id="shotbtn">儲存圖片</button><button class="btn" data-act="copy" id="copybtn">複製結果</button>'+
+    '<button class="btn" data-act="atlas">看 64 島圖鑑</button>'+
+    '<button class="btn ghost" data-act="start">再航行一次</button></div>'+
+    '<div class="shot" id="shot" hidden></div>'+
+    '<p class="said" id="said" hidden></p>';
+}
+
+function vAtlas(){
+  var h='<h2 class="page-t">島嶼圖鑑</h2><p class="page-s">點選海圖上的任何一座島，下方會展開這種人格的核心特質、認知功能、常見困境、職涯方向和相容性圖表。走過的島會被點亮。</p>';
+  var g='<div class="atlas" role="group" aria-label="六十四島海圖"><div></div>';
+  for(var c=0;c<8;c++){g+='<div class="ch">'+codeAt(0,c).slice(0,3)+'</div>';}
+  for(var r=0;r<8;r++){
+    var rc=codeAt(r,0);
+    g+='<div class="rh">'+rc[3]+rc[5]+rc[6]+'</div>';
+    for(var c2=0;c2<8;c2++){
+      var code=codeAt(r,c2),n=r*8+c2,I=info(code);
+      var cls="isle"+(got.has(n)?" got":"")+(S.mine===code?" me":"")+(S.sel===code?" sel":"");
+      g+='<button class="'+cls+'" data-code="'+code+'" aria-label="'+code+' '+I.name+(got.has(n)?'，已到訪':'')+'" aria-pressed="'+(S.sel===code)+'" aria-controls="panel-wrap"><span class="dot"></span></button>';
+    }
+  }
+  g+='</div>';
+  var legend='<div class="legend"><span class="g"><i class="dot"></i>已到訪</span><span><i class="dot"></i>未到訪</span><span>已收集 '+got.size+' / 64</span></div>'+
+    '<p class="axis-note">欄由左到右：外向或內向、實感或直覺、思考或情感。列由上到下：判斷或感知、果斷或糾結、溫暖或高冷。</p>';
+  return h+'<div class="atlas-wrap">'+g+legend+'</div>'+
+    '<div id="panel-wrap" hidden></div>'+
+    '<div class="after"><button class="btn primary" data-act="start">起航，找出我的島</button></div>';
+}
+
+function renderTop(){
+  var scr=S.screen,exScr=(scr==="exintro"||scr==="exatlas"||scr==="exresult"||(scr==="quiz"&&S.mode==="ex"));
+  var inQuiz=scr==="quiz";
+  var home=(scr==="intro"||scr==="exintro");
+  brand.disabled=inQuiz||home;
+  brand.classList.toggle("quiet",home);
+  brand.setAttribute("data-act",exScr?"exintro":"intro");
+  var bb=brand.querySelector("b"),bs=brand.querySelector("span");
+  if(bb)bb.textContent=exScr?"新世界":"六十四島";
+  if(bs)bs.textContent=exScr?"ISLANDS · 256":"ISLANDS · 64";
+  var h='<span>'+(exScr?gotX.size+' / 256':got.size+' / 64')+'</span>'+sndBtns();
+  if(Music.ok)h+='<button class="linkbtn music'+(Music.on?' on':'')+'" data-act="music" aria-pressed="'+(Music.on?'true':'false')+'" aria-label="輕音樂"><span class="eq" aria-hidden="true"><i></i><i></i><i></i></span>'+(Music.on?'音樂 開':'音樂 關')+'</button>';
+  if(scr==="intro"||scr==="result")h+='<button class="linkbtn" data-act="atlas">圖鑑</button>';
+  if(scr==="atlas")h+='<button class="linkbtn" data-act="intro">首頁</button>';
+  if(scr==="exintro"||scr==="exresult")h+='<button class="linkbtn" data-act="exatlas">圖鑑</button>';
+  if(scr==="exatlas")h+='<button class="linkbtn" data-act="exintro">首頁</button>';
+  topr.innerHTML=h;
+}
+
+function render(){
+  var views={intro:vIntro,quiz:vQuiz,result:vResult,atlas:vAtlas,exintro:vExIntro,exresult:vExResult,exatlas:vExAtlas};
+  root.innerHTML=(views[S.screen]||vIntro)();
+  if(document.body)document.body.classList.toggle("quizmode",S.screen==="quiz");
+  renderTop();
+  if(S.screen==="quiz"){
+    var sc=root.querySelector(".scene");if(sc)sc.focus({preventScroll:true});
+  }
+}
+function toTop(){window.scrollTo(0,0);}
+function markSel(){
+  root.querySelectorAll(".isle").forEach(function(b){var on=!!S.sel&&b.getAttribute("data-code")===S.sel;b.classList.toggle("sel",on);b.setAttribute("aria-pressed",on?"true":"false");});
+}
+function showPanel(code,scroll){
+  var wrap=document.getElementById("panel-wrap");if(!wrap)return;
+  S.sel=code;
+  wrap.innerHTML=panelHTML(code);wrap.hidden=false;
+  markSel();
+  if(scroll){
+    var pn=document.getElementById("panel");
+    var rm=window.matchMedia&&window.matchMedia("(prefers-reduced-motion:reduce)").matches;
+    if(pn)pn.scrollIntoView({behavior:rm?"auto":"smooth",block:"start"});
+  }
+}
+function markSelX(){
+  root.querySelectorAll(".isle.x").forEach(function(b){var on=!!S.exSel&&b.getAttribute("data-xcode")===S.exSel;b.classList.toggle("sel",on);b.setAttribute("aria-pressed",on?"true":"false");});
+}
+function syncSelects(code){
+  var f=document.getElementById("selx-f"),w=document.getElementById("selx-w");
+  if(f)f.value=code?code.slice(0,4):"";
+  if(w)w.value=code?code.slice(5):"";
+}
+function showPanelEx(code,scroll){
+  var wrap=document.getElementById("panel-wrap-x");if(!wrap)return;
+  S.exSel=code;
+  wrap.innerHTML=panelExHTML(code);wrap.hidden=false;
+  markSelX();syncSelects(code);
+  if(scroll){
+    var pn=document.getElementById("panel");
+    var rm=window.matchMedia&&window.matchMedia("(prefers-reduced-motion:reduce)").matches;
+    if(pn)pn.scrollIntoView({behavior:rm?"auto":"smooth",block:"start"});
+  }
+}
+function hidePanelEx(){
+  var wrap=document.getElementById("panel-wrap-x");
+  S.exSel=null;
+  if(wrap){wrap.hidden=true;wrap.innerHTML="";}
+  markSelX();syncSelects(null);
+}
+function hidePanel(){
+  var wrap=document.getElementById("panel-wrap");
+  S.sel=null;
+  if(wrap){wrap.hidden=true;wrap.innerHTML="";}
+  markSel();
+}
+
+/* ---------- interactions ---------- */
+function pick(k){
+  if(S.lock||S.screen!=="quiz")return;
+  var cur=S.order[S.i],qq=chs()[cur.c].qs[cur.k],flip=S.flip[S.i];
+  var o=flip?[qq.c[1],qq.c[0]]:[qq.c[0],qq.c[1]];
+  if(!o[k])return;
+  S.lock=true;
+  Au.sfx("pick",k);
+  var btn=root.querySelectorAll(".choice")[k];if(btn)btn.classList.add("picked");
+  setTimeout(function(){
+    S.ans[S.i]=o[k][0];
+    S.lock=false;
+    if(S.i>=S.order.length-1){finish();toTop();}
+    else{var nc=S.order[S.i+1].c!==cur.c;S.i++;render();Au.sfx(nc?"chapter":"wave");}
+  },240);
+}
+function back(){
+  if(S.lock)return;
+  if(S.i===0){S.screen=S.mode==="ex"?"exintro":"intro";render();return;}
+  S.i--;S.ans.length=S.i;render();
+}
+function copyResult(){
+  var text;
+  if(S.screen==="exresult"){var X=infoEx(S.exMine);text="我在「六十四島外傳・新世界」抵達了 "+X.code+"｜"+X.name+"（"+X.b.tag+"）";}
+  else{var I=info(S.mine);text="我在「六十四島」抵達了 "+I.code+"｜"+I.name+"（"+I.b.tag+"）";}
+  var btn=document.getElementById("copybtn"),said=document.getElementById("said");
+  function ok(){if(btn){btn.textContent="已複製";setTimeout(function(){btn.textContent="複製結果";},1800);}}
+  function fail(){
+    if(said){said.hidden=false;said.textContent=text;}
+    if(btn)btn.textContent="請手動複製下方文字";
+  }
+  try{
+    navigator.clipboard.writeText(text).then(ok,fail);
+  }catch(e){fail();}
+}
+
+document.addEventListener("click",function(e){
+  var t=e.target.closest("[data-act],[data-pick],[data-code],[data-nav],[data-xcode],[data-xnav]");
+  if(!t)return;
+  if(t.hasAttribute("data-pick")){pick(+t.getAttribute("data-pick"));return;}
+  if(t.hasAttribute("data-code")){
+    var code=t.getAttribute("data-code");
+    Au.sfx("isle",idxOf(code)&7);
+    var wrap=document.getElementById("panel-wrap");
+    if(S.sel===code&&wrap&&!wrap.hidden)hidePanel();else showPanel(code,true);
+    return;
+  }
+  if(t.hasAttribute("data-xcode")){
+    var xc=t.getAttribute("data-xcode");
+    Au.sfx("isle",idxEx(xc)&7);
+    var xw=document.getElementById("panel-wrap-x");
+    if(S.exSel===xc&&xw&&!xw.hidden)hidePanelEx();else showPanelEx(xc,true);
+    return;
+  }
+  if(t.hasAttribute("data-xnav")){
+    if(!S.exSel)return;
+    Au.sfx("tick");
+    var xn=(idxEx(S.exSel)+(+t.getAttribute("data-xnav"))+256)%256;
+    showPanelEx(codeAtEx(xn>>4,xn&15),false);
+    return;
+  }
+  if(t.hasAttribute("data-nav")){
+    if(!S.sel)return;
+    Au.sfx("tick");
+    var n=(idxOf(S.sel)+(+t.getAttribute("data-nav"))+64)%64;
+    showPanel(codeAt(n>>3,n&7),false);
+    return;
+  }
+  var a=t.getAttribute("data-act");
+  if(a==="sfx"){Au.setS(!Au.s);renderTop();Au.sfx("tick");return;}
+  Au.sfx(a==="start"||a==="startx"?"start":"tick");
+  if(a==="start"){startGame("main");toTop();}
+  else if(a==="startx"){startGame("ex");toTop();}
+  else if(a==="back")back();
+  else if(a==="atlas"){S.sel=null;S.screen="atlas";render();toTop();}
+  else if(a==="intro"){if(S.screen!=="quiz"){S.screen="intro";render();toTop();}}
+  else if(a==="copy")copyResult();
+  else if(a==="shot")doShot();
+  else if(a==="shotsave")saveShot();
+  else if(a==="shotclose"){var sb=document.getElementById("shot");if(sb){sb.hidden=true;sb.innerHTML="";}}
+  else if(a==="closepanel")hidePanel();
+  else if(a==="closexpanel")hidePanelEx();
+  else if(a==="exintro"){if(S.screen!=="quiz"){S.screen="exintro";render();toTop();}}
+  else if(a==="exatlas"){S.exSel=null;S.screen="exatlas";render();toTop();}
+  else if(a==="music"){
+    wantAuto=false;
+    if(Music.on){Music.stop();setMusicPref(false);}else{Music.start();setMusicPref(Music.on);}
+    renderTop();
+  }
+});
+document.addEventListener("change",function(e){
+  var id=e.target&&e.target.id;
+  if(id!=="selx-f"&&id!=="selx-w")return;
+  var f=document.getElementById("selx-f").value||GROUPS[0].l[0];
+  var w=document.getElementById("selx-w").value||"AH-CL";
+  Au.sfx("isle",3);
+  showPanelEx(f+"-"+w,true);
+});
+document.addEventListener("pointerdown",function(){Au.unlock();},true);
+document.addEventListener("keydown",function(){Au.unlock();},true);
+document.addEventListener("keydown",function(e){
+  if(S.screen!=="quiz"||e.metaKey||e.ctrlKey||e.altKey)return;
+  if(e.key==="1"||e.key==="a"||e.key==="A")pick(0);
+  else if(e.key==="2"||e.key==="b"||e.key==="B")pick(1);
+  else if(e.key==="ArrowLeft"||e.key==="Backspace"){e.preventDefault();back();}
+});
+
+/* music begins as the page opens; the browser keeps the audio paused until the first touch, click or key press, which wakes it up */
+function wakeMusic(){if(Music.ok&&Music.on)Music.resume();}
+["pointerdown","touchend","keydown","click"].forEach(function(t){document.addEventListener(t,wakeMusic,true);});
+if(wantAuto&&Music.ok){wantAuto=false;Music.start();}
+document.addEventListener("visibilitychange",function(){
+  if(document.hidden)Music.pause();else Music.resume();
+});
+
+render();
+})();
+</script>
+
+</body></html>
